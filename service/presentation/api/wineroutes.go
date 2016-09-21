@@ -24,9 +24,21 @@ var WineRoutes = Routes{
 		Test,
 	},
 	Route{
-		"Welcome",
+		"GetWines",
 		http.MethodGet,
 		"/api/wines",
 		GetWines,
+	},
+	Route{
+		"OptionsWines",
+		http.MethodOptions,
+		"/api/wines",
+		OptionsWines,
+	},
+	Route{
+		"PostWines",
+		http.MethodPost,
+		"/api/wines",
+		PostWines,
 	},
 }

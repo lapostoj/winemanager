@@ -36,3 +36,12 @@ func GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
 	_, err := q.GetAll(ctx, wines)
 	return err
 }
+
+// SaveWine save the wine in the database.
+func SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
+	key := datastore.NewIncompleteKey(ctx, entityKind, nil)
+	if _, err := datastore.Put(ctx, key, wine); err != nil {
+		return "", err
+	}
+	return key.Encode(), nil
+}

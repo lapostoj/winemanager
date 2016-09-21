@@ -1,10 +1,6 @@
 package response
 
-import (
-	"time"
-
-	"github.com/lapostoj/winemanager/service/domain/model/wine"
-)
+import "github.com/lapostoj/winemanager/service/domain/model/wine"
 
 // WineResponse defines the object used when sending a wine.
 type WineResponse struct {
@@ -21,7 +17,6 @@ type WineResponse struct {
 	Size            string                  `json:"size"`
 	History         []VariationResponse     `json:"history"`
 	StorageLocation StorageLocationResponse `json:"storageLocation"`
-	CreationTime    time.Time               `json:"creationTime"`
 }
 
 // NewWineResponse transforms a Wine in WineReponse

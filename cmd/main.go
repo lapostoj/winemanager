@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/lapostoj/winemanager/service/presentation"
-
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/user"
+
+	"github.com/lapostoj/winemanager/service/presentation"
 )
 
 // Init is called before the application starts.
