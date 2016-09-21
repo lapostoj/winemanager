@@ -22,8 +22,7 @@ type Wine struct {
 
 // NewWine creates a Wine struct with default values.
 func NewWine() *Wine {
-	wine := Wine{
+	return &Wine{
 		CreationTime: time.Now().UTC(),
 	}
-	return &wine
 }
