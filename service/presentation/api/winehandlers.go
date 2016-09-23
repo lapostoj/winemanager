@@ -20,7 +20,9 @@ func Test(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 
 	if err := persistence.TestWine(ctx); err != nil {
+		log.Errorf(ctx, "TestWine - persistence: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Write([]byte("TestWine added"))
@@ -32,14 +34,14 @@ func GetWines(w http.ResponseWriter, r *http.Request) {
 
 	var wines []wine.Wine
 	if err := persistence.GetWinesInStock(ctx, &wines); err != nil {
-		log.Errorf(ctx, "GetWines: %q\n", err)
+		log.Errorf(ctx, "GetWines - persistence: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	response, err := json.Marshal(response.NewWineResponses(wines))
 	if err != nil {
-		log.Errorf(ctx, "GetWines: %q\n", err)
+		log.Errorf(ctx, "GetWines - marshal: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -64,7 +66,7 @@ func PostWines(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&postWineRequest)
 	if err != nil {
-		log.Errorf(ctx, "PostWines: %q\n", err)
+		log.Errorf(ctx, "PostWines - decode: %q\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -73,7 +75,7 @@ func PostWines(w http.ResponseWriter, r *http.Request) {
 	log.Infof(ctx, "%q", wine)
 	key, err := persistence.SaveWine(ctx, wine)
 	if err != nil {
-		log.Errorf(ctx, "PostWines: %q\n", err)
+		log.Errorf(ctx, "PostWines - persistence: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
