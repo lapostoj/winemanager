@@ -4,40 +4,25 @@ package wine
 
 import "fmt"
 
-const (
-	_Size_name_0 = "BOTTLEMAGNUM"
-	_Size_name_1 = "JEROBOAM"
-	_Size_name_2 = "METHUSELAH"
-	_Size_name_3 = "SALMANAZAR"
-	_Size_name_4 = "BALTHAZAR"
-	_Size_name_5 = "NABUCHADNEZZAR"
-)
+const _Size_name = "UNKNOWNHALFBOTTLEHALFLITERJURABOTTLEBOTTLEMAGNUMJEROBOAMMETHUSELAHSALMANAZARBALTHAZARNABUCHADNEZZAR"
 
-var (
-	_Size_index_0 = [...]uint8{0, 6, 12}
-	_Size_index_1 = [...]uint8{0, 8}
-	_Size_index_2 = [...]uint8{0, 10}
-	_Size_index_3 = [...]uint8{0, 10}
-	_Size_index_4 = [...]uint8{0, 9}
-	_Size_index_5 = [...]uint8{0, 14}
-)
+var _Size_map = map[Size]string{
+	0:    _Size_name[0:7],
+	37:   _Size_name[7:17],
+	50:   _Size_name[17:26],
+	62:   _Size_name[26:36],
+	75:   _Size_name[36:42],
+	150:  _Size_name[42:48],
+	300:  _Size_name[48:56],
+	600:  _Size_name[56:66],
+	1200: _Size_name[66:76],
+	1800: _Size_name[76:85],
+	2400: _Size_name[85:99],
+}
 
 func (i Size) String() string {
-	switch {
-	case 1 <= i && i <= 2:
-		i -= 1
-		return _Size_name_0[_Size_index_0[i]:_Size_index_0[i+1]]
-	case i == 4:
-		return _Size_name_1
-	case i == 8:
-		return _Size_name_2
-	case i == 12:
-		return _Size_name_3
-	case i == 16:
-		return _Size_name_4
-	case i == 20:
-		return _Size_name_5
-	default:
-		return fmt.Sprintf("Size(%d)", i)
+	if str, ok := _Size_map[i]; ok {
+		return str
 	}
+	return fmt.Sprintf("Size(%d)", i)
 }
