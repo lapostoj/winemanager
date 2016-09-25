@@ -13,13 +13,13 @@ import (
 // Init is called before the application starts.
 func init() {
 	router := presentation.NewRouter()
-	http.HandleFunc("/", welcome)
+	http.HandleFunc("/", mainHandler)
 	http.Handle("/api/", router)
 }
 
 // This will just ask the user to identify.
 // In itself it doesn't add any restriction after this identification.
-func welcome(w http.ResponseWriter, r *http.Request) {
+func mainHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html; charset=utf-8")
 	ctx := appengine.NewContext(r)
 	u := user.Current(ctx)
@@ -28,7 +28,8 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, `<a href="%s">Sign in or register</a>`, url)
 		return
 	}
-	url, _ := user.LogoutURL(ctx, "/")
+	//url, _ := user.LogoutURL(ctx, "/")
 
-	fmt.Fprintf(w, `Welcome, %s! (<a href="%s">sign out</a>)`, u, url)
+	http.ServeFile(w, r, "app"+r.URL.Path)
+	//fmt.Fprintf(w, `Welcome, %s! (<a href="%s">sign out</a>)`, u, url)
 }

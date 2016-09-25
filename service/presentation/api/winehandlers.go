@@ -5,15 +5,13 @@ import (
 	"net/http"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
-	"github.com/lapostoj/winemanager/service/infrastructure/persistence/appengine"
+	"github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 	"github.com/lapostoj/winemanager/service/presentation/api/request"
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
 )
-
-const website = "http://cave-inventaire.appspot.com/"
 
 // Test handles the GET calls to '/api/test'
 func Test(w http.ResponseWriter, r *http.Request) {
@@ -52,14 +50,13 @@ func GetWines(w http.ResponseWriter, r *http.Request) {
 
 // OptionsWines handles the OPTIONS calls to '/api/wines' and check their headers
 func OptionsWines(w http.ResponseWriter, r *http.Request) {
-	// w.Header().Set("Access-Control-Allow-Origin", website)
+	w.Header().Set("Access-Control-Allow-Origin", website)
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 // PostWines handles the POST calls to '/api/wines' and add the wine in the database
 func PostWines(w http.ResponseWriter, r *http.Request) {
-	// w.Header().Set("Access-Control-Allow-Origin", website)
 	ctx := appengine.NewContext(r)
 	var postWineRequest request.PostWineRequest
 

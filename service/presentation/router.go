@@ -10,10 +10,9 @@ import (
 // NewRouter creates a router to mach routes and handlers
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range api.WineRoutes {
+	for _, route := range api.APIRoutes {
 		var handler http.Handler
 		handler = route.HandlerFunc
-		handler = Logger(handler, route.Name)
 
 		router.
 			Methods(route.Method).

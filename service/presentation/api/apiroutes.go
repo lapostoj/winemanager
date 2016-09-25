@@ -4,6 +4,8 @@ import (
 	"net/http"
 )
 
+const website = "http://cave-inventaire.appspot.com"
+
 // Route structure for API.
 type Route struct {
 	Name        string
@@ -15,8 +17,8 @@ type Route struct {
 // Routes defines the specific routes of this API.
 type Routes []Route
 
-// WineRoutes defines the API routes for wine
-var WineRoutes = Routes{
+// APIRoutes defines the API routes for the winemanager
+var APIRoutes = Routes{
 	Route{
 		"Welcome",
 		http.MethodGet,
@@ -40,5 +42,11 @@ var WineRoutes = Routes{
 		http.MethodPost,
 		"/api/wines",
 		PostWines,
+	},
+	Route{
+		"PostImport",
+		http.MethodPost,
+		"/api/import",
+		PostImport,
 	},
 }
