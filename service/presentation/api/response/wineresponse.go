@@ -40,7 +40,7 @@ func NewWineResponse(wine wine.Wine) *WineResponse {
 
 // NewWineResponses transforms a slice of Wine in a slice of WineReponse
 func NewWineResponses(wines []wine.Wine) []WineResponse {
-	var wineResponses []WineResponse
+	wineResponses := []WineResponse{}
 	for _, wine := range wines {
 		wineResponses = append(wineResponses, *NewWineResponse(wine))
 	}

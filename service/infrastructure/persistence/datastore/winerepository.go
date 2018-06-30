@@ -20,9 +20,20 @@ func TestWine(ctx context.Context) error {
 
 	storageLocation := wine.StorageLocation{Cellar: "Moiré", Position: "3"}
 	testWine := wine.NewWine()
-	testWine.StorageLocation = storageLocation
+	testWine.Name = "Test Wine"
+	testWine.Designation = "Test Designation"
+	testWine.Growth = "Test Growth"
+	testWine.Country = "FR"
+	testWine.Region = "Bourgogne"
+	testWine.Producer = "Test Producer"
+	testWine.Color = wine.RED
+	testWine.Type = wine.SEC
+	// Following should be on a "Bottle" object
+	// We can have several bottle of the same type of wines.
+	testWine.Year = 1963
 	testWine.Quantity = 3
-	testWine.Color = wine.ROSE
+	testWine.Size = wine.BOTTLE
+	testWine.StorageLocation = storageLocation
 
 	_, err := datastore.Put(ctx, k, testWine)
 	return err
