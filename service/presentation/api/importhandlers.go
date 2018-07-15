@@ -1,12 +1,13 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
-	"fmt"
 	"mime/multipart"
 	"net/http"
 
 	"github.com/lapostoj/winemanager/service/application/service"
+	"github.com/lapostoj/winemanager/service/presentation/api/response"
 
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
@@ -16,32 +17,47 @@ import (
 // Inspired from https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/04.5.html.
 func PostImport(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
+	w.Header().Set("Access-Control-Allow-Origin", website)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 	if err := validateHeaders(r); err != nil {
-		log.Warningf(ctx, "PostImport: Invalid headers: %s", err.Error())
+		log.Warningf(ctx, "PostImport - Invalid headers: %s", err.Error())
 		http.Error(w, "Invalid headers", http.StatusBadRequest)
 		return
 	}
 
 	r.ParseMultipartForm(32 << 20)
-	file, handler, err := r.FormFile("uploadfile")
+	file, headers, err := r.FormFile("file")
+	filename := headers.Filename
+	log.Infof(ctx, "PostImport - Importing file: %s", filename)
 	if err != nil {
-		fmt.Println(err)
+		log.Errorf(ctx, "File: %q\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	defer file.Close()
-	if err := validateFileType(handler); err != nil {
-		log.Warningf(ctx, "PostImport: Invalid file: %s", err.Error())
+	if err := validateFileType(headers); err != nil {
+		log.Warningf(ctx, "PostImport - Invalid file: %s", err.Error())
 		http.Error(w, "Invalid file", http.StatusBadRequest)
 		return
 	}
-	if err := service.ExecuteCsvImport(ctx, file); err != nil {
+	wines, err := service.ExecuteCsvImport(ctx, file)
+	if err != nil {
 		log.Warningf(ctx, "PostImport - %s", err.Error())
 		http.Error(w, "Invalid data", http.StatusBadRequest)
 		return
 	}
 
-	w.WriteHeader(200)
-	w.Write([]byte(handler.Filename + " imported."))
+	response, err := json.Marshal(response.NewWineResponses(wines))
+	if err != nil {
+		log.Errorf(ctx, "GetWines - marshal: %q\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(201)
+	w.Write(response)
 }
 
 func validateHeaders(r *http.Request) error {
@@ -54,9 +70,7 @@ func validateHeaders(r *http.Request) error {
 
 func validateFileType(fileHeaders *multipart.FileHeader) error {
 	contentTypeHeader := "Content-Type"
-	// Whatever I tried I never got 'text/csv' but always 'application/vnd.ms-excel'.
-	// Can be changed later if some 'test/csv' appear.
-	csvType := "application/vnd.ms-excel"
+	csvType := "text/csv"
 
 	if fileHeaders.Header.Get(contentTypeHeader) == csvType {
 		return nil

@@ -20,31 +20,33 @@ type CsvImport struct {
 }
 
 // ExecuteCsvImport executes the service.
-func ExecuteCsvImport(ctx context.Context, file multipart.File) error {
-	lines, err := readLineByLine(ctx, file)
+func ExecuteCsvImport(ctx context.Context, file multipart.File) ([]wine.Wine, error) {
+	wines, err := readLineByLine(ctx, file)
 	if err != nil {
-		return errors.New("ExecuteCsvImport: " + err.Error())
+		return *new([]wine.Wine), errors.New("ExecuteCsvImport - " + err.Error())
 	}
-	log.Infof(ctx, "%d data lines read", lines)
-	return nil
+	log.Infof(ctx, "ExecuteCsvImport - %d data lines read", len(wines))
+	return wines, nil
 }
 
-func readLineByLine(ctx context.Context, file multipart.File) (int, error) {
+func readLineByLine(ctx context.Context, file multipart.File) ([]wine.Wine, error) {
 	reader := bufio.NewReader(file)
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
 	lines := 0
+	var wines []wine.Wine
 	for scanner.Scan() {
 		if lines == 0 {
 			if !validateData(scanner.Text(), referenceHeaders) {
-				return 0, errors.New("Invalid data.")
+				return wines, errors.New("Invalid data")
 			}
 		} else {
-			persistDataLine(ctx, scanner.Text())
+			wine := persistDataLine(ctx, scanner.Text())
+			wines = append(wines, *wine)
 		}
 		lines++
 	}
-	return lines - 1, nil
+	return wines, nil
 }
 
 func validateData(header string, referenceHeaders []string) bool {
@@ -52,10 +54,11 @@ func validateData(header string, referenceHeaders []string) bool {
 	return equalsStringSlices(referenceHeaders, headers)
 }
 
-func persistDataLine(ctx context.Context, line string) {
+func persistDataLine(ctx context.Context, line string) *wine.Wine {
 	data := parseLine(line)
 	wine := dataToWine(data)
 	persistence.SaveWine(ctx, wine)
+	return wine
 }
 
 func parseLine(line string) []string {

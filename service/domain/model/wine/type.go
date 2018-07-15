@@ -15,6 +15,7 @@ const (
 	DOUX                = "DOUX"
 	MOELLEUX            = "MOELLEUX"
 	TRANQUILLE          = "TRANQUILLE"
+	AUTRE               = "AUTRE"
 )
 
 func (t Type) String() string {
@@ -33,6 +34,8 @@ func (t Type) String() string {
 		return "MOELLEUX"
 	case TRANQUILLE:
 		return "TRANQUILLE"
+	case AUTRE:
+		return "AUTRE"
 	}
 	panic(errors.New("Unknown type"))
 }
@@ -55,8 +58,8 @@ func StringToType(s string) Type {
 		return MOELLEUX
 	case "Tranquille":
 		return TRANQUILLE
-	case "":
-		return ""
+	case "Autre":
+		return AUTRE
 	}
 	panic(errors.New("Unknwown type: " + s))
 }

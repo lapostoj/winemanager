@@ -13,3 +13,17 @@ Without them there is a double import when running goapp.
 * Go (backend)
 * React (expected)
 * EcmaScript2015 (expected)
+
+## Development
+```
+dev_appserver.py cmd/app.yml
+```
+
+The application expects the following in the `cmd` folder:
+ - an appengine config `app.yaml`.
+ - a static frontend part to live in an `app` folder to serve (with `index.html` and `notfound.html`)
+
+ ## Deploy
+ ```
+ gcloud app deploy
+ ```

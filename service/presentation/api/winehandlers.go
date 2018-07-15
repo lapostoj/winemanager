@@ -29,6 +29,8 @@ func Test(w http.ResponseWriter, r *http.Request) {
 // GetWines handles the GET calls to '/api/wines' and return the stored wines (non 0 quantity)
 func GetWines(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
+	w.Header().Set("Access-Control-Allow-Origin", website)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	var wines []wine.Wine
 	if err := persistence.GetWinesInStock(ctx, &wines); err != nil {
@@ -44,7 +46,6 @@ func GetWines(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Write(response)
 }
 
@@ -69,7 +70,6 @@ func PostWines(w http.ResponseWriter, r *http.Request) {
 	}
 
 	wine := postWineRequest.NewWine()
-	log.Infof(ctx, "%q", wine)
 	key, err := persistence.SaveWine(ctx, wine)
 	if err != nil {
 		log.Errorf(ctx, "PostWines - persistence: %q\n", err)
