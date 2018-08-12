@@ -2,6 +2,7 @@ package service
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"mime/multipart"
 	"strings"
@@ -11,8 +12,6 @@ import (
 	"github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 
 	"google.golang.org/appengine/log"
-
-	"golang.org/x/net/context"
 )
 
 // CsvImport implements a service to parse a CSV file and import in in the db.

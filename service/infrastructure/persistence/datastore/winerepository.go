@@ -1,7 +1,7 @@
 package persistence
 
 import (
-	"golang.org/x/net/context"
+	"context"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
 	"google.golang.org/appengine/datastore"

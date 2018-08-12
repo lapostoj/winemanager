@@ -16,7 +16,7 @@ Without them there is a double import when running goapp.
 
 ## Development
 ```
-dev_appserver.py cmd/app.yml
+dev_appserver.py cmd/app.yaml
 ```
 
 The application expects the following in the `cmd` folder:
