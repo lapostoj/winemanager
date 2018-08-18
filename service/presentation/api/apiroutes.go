@@ -4,7 +4,8 @@ import (
 	"net/http"
 )
 
-const website = "http://cave-inventaire.appspot.com"
+// Website is the url expected to use for the Access-Control-Allow-Origin header
+const Website = "http://cave-inventaire.appspot.com"
 
 // Route structure for API.
 type Route struct {
