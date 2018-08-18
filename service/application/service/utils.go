@@ -2,7 +2,8 @@ package service
 
 import "strconv"
 
-func equalsStringSlices(a []string, b []string) bool {
+// EqualsStringSlices checks if two slices of strings are equals or not.
+func EqualsStringSlices(a []string, b []string) bool {
 	if len(a) != len(b) || cap(a) != cap(b) {
 		return false
 	}
@@ -14,7 +15,8 @@ func equalsStringSlices(a []string, b []string) bool {
 	return true
 }
 
-func stringToInt(s string) int {
+// StringToInt converts a string to the corresponding int or panic if it's not a valid int string.
+func StringToInt(s string) int {
 	if s == "" {
 		return 0
 	}

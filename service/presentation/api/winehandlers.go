@@ -29,7 +29,7 @@ func Test(w http.ResponseWriter, r *http.Request) {
 // GetWines handles the GET calls to '/api/wines' and return the stored wines (non 0 quantity)
 func GetWines(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-	w.Header().Set("Access-Control-Allow-Origin", website)
+	w.Header().Set("Access-Control-Allow-Origin", Website)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	var wines []wine.Wine
@@ -51,7 +51,7 @@ func GetWines(w http.ResponseWriter, r *http.Request) {
 
 // OptionsWines handles the OPTIONS calls to '/api/wines' and check their headers
 func OptionsWines(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", website)
+	w.Header().Set("Access-Control-Allow-Origin", Website)
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }

@@ -36,7 +36,7 @@ func (request PostWineRequest) NewWine() *wine.Wine {
 		Type:        request.Type,
 		Quantity:    request.Quantity,
 		Producer:    request.Producer,
-		Size:        1,
+		Size:        request.Size,
 		History:     *new([]wine.Variation),
 		StorageLocation: wine.StorageLocation{
 			Cellar:   request.Cellar,

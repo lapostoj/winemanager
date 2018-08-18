@@ -4,13 +4,11 @@ import (
 	"bufio"
 	"context"
 	"errors"
-	"mime/multipart"
 	"strings"
 	"time"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
 	"github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
-
 	"google.golang.org/appengine/log"
 )
 
@@ -19,8 +17,8 @@ type CsvImport struct {
 }
 
 // ExecuteCsvImport executes the service.
-func ExecuteCsvImport(ctx context.Context, file multipart.File) ([]wine.Wine, error) {
-	wines, err := readLineByLine(ctx, file)
+func ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
+	wines, err := readLineByLine(ctx, reader)
 	if err != nil {
 		return *new([]wine.Wine), errors.New("ExecuteCsvImport - " + err.Error())
 	}
@@ -28,29 +26,29 @@ func ExecuteCsvImport(ctx context.Context, file multipart.File) ([]wine.Wine, er
 	return wines, nil
 }
 
-func readLineByLine(ctx context.Context, file multipart.File) ([]wine.Wine, error) {
-	reader := bufio.NewReader(file)
+func readLineByLine(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
-	lines := 0
+	linesRead := 0
 	var wines []wine.Wine
 	for scanner.Scan() {
-		if lines == 0 {
-			if !validateData(scanner.Text(), referenceHeaders) {
+		line := scanner.Text()
+		if linesRead == 0 {
+			if !validateData(line, referenceHeaders) {
 				return wines, errors.New("Invalid data")
 			}
 		} else {
-			wine := persistDataLine(ctx, scanner.Text())
+			wine := persistDataLine(ctx, line)
 			wines = append(wines, *wine)
 		}
-		lines++
+		linesRead++
 	}
 	return wines, nil
 }
 
 func validateData(header string, referenceHeaders []string) bool {
 	headers := parseLine(header)
-	return equalsStringSlices(referenceHeaders, headers)
+	return EqualsStringSlices(referenceHeaders, headers)
 }
 
 func persistDataLine(ctx context.Context, line string) *wine.Wine {
@@ -70,14 +68,14 @@ func dataToWine(data []string) *wine.Wine {
 		Name:        data[0],
 		Designation: data[1],
 		Growth:      data[2],
-		Year:        stringToInt(data[3]),
+		Year:        StringToInt(data[3]),
 		Country:     "France",
 		Region:      data[4],
 		Color:       wine.StringToColor(data[5]),
 		Type:        wine.StringToType(data[6]),
-		Quantity:    stringToInt(data[7]),
+		Quantity:    StringToInt(data[7]),
 		Producer:    data[8],
-		Size:        wine.IntToSize(stringToInt(data[10])),
+		Size:        wine.IntToSize(StringToInt(data[10])),
 		StorageLocation: wine.StorageLocation{
 			Cellar: "Moiré",
 		},
