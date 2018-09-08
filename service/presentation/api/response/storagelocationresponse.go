@@ -1,17 +1,15 @@
 package response
 
-import "github.com/lapostoj/winemanager/service/domain/model/wine"
+import "github.com/lapostoj/winemanager/service/domain/model/bottle"
 
 // StorageLocationResponse defines the object used when sending a storage location.
 type StorageLocationResponse struct {
-	Cellar   string `json:"cellar"`
 	Position string `json:"position"`
 }
 
 // NewStorageLocationResponse transforms a StorageLocation in a StorageLocationResponse.
-func NewStorageLocationResponse(storageLocation wine.StorageLocation) *StorageLocationResponse {
+func NewStorageLocationResponse(storageLocation bottle.StorageLocation) *StorageLocationResponse {
 	return &StorageLocationResponse{
-		Cellar:   storageLocation.Cellar,
 		Position: storageLocation.Position,
 	}
 }

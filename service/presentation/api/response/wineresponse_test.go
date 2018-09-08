@@ -22,8 +22,4 @@ func TestNewWineResponse(t *testing.T) {
 	assert.Equal(t, wineResponse.Producer, wine.Producer)
 	assert.Equal(t, wineResponse.Color, "RED")
 	assert.Equal(t, wineResponse.Type, "SEC")
-	assert.Equal(t, wineResponse.Year, wine.Year)
-	assert.Equal(t, wineResponse.Quantity, wine.Quantity)
-	assert.Equal(t, wineResponse.Size, "BOTTLE")
-	assert.NotNil(t, wineResponse.StorageLocation)
 }

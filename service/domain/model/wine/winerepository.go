@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-// Repository is the interface for a repository in the persistence layer for the Wine aggregate
+// Repository is the interface for a repository in the persistence layer for the Wine normalized value
 type Repository interface {
 	SaveTestWine(ctx context.Context) error
 	GetWinesInStock(ctx context.Context, wines *[]Wine) error
