@@ -1,25 +1,25 @@
 package response
 
-import "github.com/lapostoj/winemanager/service/domain/model/wine"
+import "github.com/lapostoj/winemanager/service/domain/model/bottle"
 
 // VariationResponse defines the object used when sending a variation.
 type VariationResponse struct {
-	Date     string `json:"date"`
+	Time     string `json:"time"`
 	Quantity int    `json:"quantity"`
 	Details  string `json:"details"`
 }
 
-// NewVariationResponse transforms a Varition in a VariationResponse.
-func NewVariationResponse(variation wine.Variation) *VariationResponse {
+// NewVariationResponse transforms a Variation in a VariationResponse.
+func NewVariationResponse(variation bottle.Variation) *VariationResponse {
 	return &VariationResponse{
-		Date:     variation.Date.String(),
+		Time:     variation.Time.String(),
 		Quantity: variation.Quantity,
 		Details:  variation.Details,
 	}
 }
 
 // NewVariationResponses transforms a slice of Variation in a slice of VariationResponse
-func NewVariationResponses(variations []wine.Variation) []VariationResponse {
+func NewVariationResponses(variations []bottle.Variation) []VariationResponse {
 	var variationResponses []VariationResponse
 	for _, variation := range variations {
 		variationResponses = append(variationResponses, *NewVariationResponse(variation))

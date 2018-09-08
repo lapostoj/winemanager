@@ -1,4 +1,4 @@
-package wine
+package bottle
 
 import (
 	"errors"

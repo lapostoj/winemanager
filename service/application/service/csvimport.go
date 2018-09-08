@@ -6,7 +6,6 @@ import (
 	"errors"
 	"log"
 	"strings"
-	"time"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
 )
@@ -72,18 +71,17 @@ func dataToWine(data []string) *wine.Wine {
 		Name:        data[0],
 		Designation: data[1],
 		Growth:      data[2],
-		Year:        StringToInt(data[3]),
 		Country:     "France",
 		Region:      data[4],
 		Color:       wine.StringToColor(data[5]),
 		Type:        wine.StringToType(data[6]),
-		Quantity:    StringToInt(data[7]),
 		Producer:    data[8],
-		Size:        wine.IntToSize(StringToInt(data[10])),
-		StorageLocation: wine.StorageLocation{
-			Cellar: "Moiré",
-		},
-		CreationTime: time.Now().UTC(),
+		// Year:        StringToInt(data[3]),
+		// Quantity:    StringToInt(data[7]),
+		// Size:        wine.IntToSize(StringToInt(data[10])),
+		// StorageLocation: wine.StorageLocation{
+		// 	Cellar: "Moiré",
+		// },
 	}
 }
 
