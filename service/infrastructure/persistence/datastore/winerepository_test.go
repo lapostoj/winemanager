@@ -2,7 +2,6 @@ package persistence_test
 
 import (
 	"context"
-	"log"
 	"testing"
 
 	"cloud.google.com/go/datastore"
@@ -26,19 +25,9 @@ func TestSaveWine(t *testing.T) {
 
 	key, _ := datastore.DecodeKey(encodedKey)
 	var retrievedWine wine.Wine
-	if err := datastoreClient(ctx).Get(ctx, key, &retrievedWine); err != nil {
+	if err := persistence.DatastoreClient(ctx).Get(ctx, key, &retrievedWine); err != nil {
 		panic(err)
 	}
 
-	assert.Equal(t, retrievedWine.Name, aWine.Name)
-	assert.Equal(t, retrievedWine.CreationTime.UTC().String(), aWine.CreationTime.UTC().String())
-}
-
-func datastoreClient(ctx context.Context) *datastore.Client {
-	client, err := datastore.NewClient(ctx, "cave-inventaire")
-	if err != nil {
-		log.Println("Datastore client error")
-		log.Fatal(err)
-	}
-	return client
+	assert.Equal(t, retrievedWine, aWine)
 }

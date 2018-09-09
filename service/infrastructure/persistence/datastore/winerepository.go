@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"context"
-	"log"
 
 	"cloud.google.com/go/datastore"
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
@@ -36,24 +35,15 @@ func (repository WineRepository) SaveTestWine(ctx context.Context) error {
 func (repository WineRepository) GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
 	q := datastore.NewQuery(entityKind).Filter("Quantity >", 0)
 
-	_, err := datastoreClient(ctx).GetAll(ctx, q, wines)
+	_, err := DatastoreClient(ctx).GetAll(ctx, q, wines)
 	return err
 }
 
 // SaveWine save the wine in the database.
 func (repository WineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
-	key, err := datastoreClient(ctx).Put(ctx, datastore.IncompleteKey(entityKind, nil), wine)
+	key, err := DatastoreClient(ctx).Put(ctx, datastore.IncompleteKey(entityKind, nil), wine)
 	if err != nil {
 		return "", err
 	}
 	return key.Encode(), nil
-}
-
-func datastoreClient(ctx context.Context) *datastore.Client {
-	client, err := datastore.NewClient(ctx, "cave-inventaire")
-	if err != nil {
-		log.Println("Datastore client error")
-		log.Fatal(err)
-	}
-	return client
 }
