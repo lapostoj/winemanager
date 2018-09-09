@@ -6,15 +6,20 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/lapostoj/winemanager/service/presentation"
+	"github.com/lapostoj/winemanager/service/application/service"
+	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
+	"github.com/lapostoj/winemanager/service/presentation/api"
 )
 
 const defaultPort = "8080"
 
-// Init is called before the application starts.
+// main is called before the application starts.
 func main() {
-	router := presentation.NewRouter()
 	frontend_folder := os.Getenv("FRONTEND_FOLDER")
+	cellarRepository := persistence.CellarRepository{}
+	getCellarService := service.GetCellar{Repository: cellarRepository}
+	cellarHandler := api.CellarHandler{GetCellar: getCellarService}
+	router := api.NewRouter(cellarHandler)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(frontend_folder)))
 	http.Handle("/api/", router)

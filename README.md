@@ -13,6 +13,7 @@ The project is made with an upload on Google appengine in mind.
 ## Technology
 
 - Go 1.12 (with modules)
+=======
 
 ## Development
 

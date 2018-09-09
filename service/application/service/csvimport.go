@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
+	"github.com/lapostoj/winemanager/service/infrastructure/utils"
 )
 
 type CsvImportInterface interface {
@@ -51,7 +52,7 @@ func (service CsvImport) readLineByLine(ctx context.Context, reader *bufio.Reade
 
 func validateData(header string, referenceHeaders []string) bool {
 	headers := parseLine(header)
-	return EqualsStringSlices(referenceHeaders, headers)
+	return utils.EqualsStringSlices(referenceHeaders, headers)
 }
 
 func (service CsvImport) persistDataLine(ctx context.Context, line string) *wine.Wine {
@@ -76,8 +77,8 @@ func dataToWine(data []string) *wine.Wine {
 		Color:       wine.StringToColor(data[5]),
 		Type:        wine.StringToType(data[6]),
 		Producer:    data[8],
-		// Year:        StringToInt(data[3]),
-		// Quantity:    StringToInt(data[7]),
+		// Year:        utils.StringToInt(data[3]),
+		// Quantity:    utils.StringToInt(data[7]),
 		// Size:        wine.IntToSize(StringToInt(data[10])),
 		// StorageLocation: wine.StorageLocation{
 		// 	Cellar: "Moiré",
