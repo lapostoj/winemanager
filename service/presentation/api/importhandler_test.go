@@ -2,6 +2,7 @@ package api_test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -16,11 +17,10 @@ import (
 
 	"github.com/lapostoj/winemanager/service/presentation/api"
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
-	"github.com/lapostoj/winemanager/service/test"
 )
 
 func TestPostImport(t *testing.T) {
-	ctx := test.AnAppEngineTestContext()
+	ctx := context.Background()
 	recorder := httptest.NewRecorder()
 	csvFile := openCsvTestFile()
 

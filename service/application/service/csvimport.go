@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"context"
 	"errors"
+	"log"
 	"strings"
 	"time"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
-	"github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
-	"google.golang.org/appengine/log"
+	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 )
 
 // CsvImport implements a service to parse a CSV file and import in in the db.
@@ -22,7 +22,7 @@ func ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, e
 	if err != nil {
 		return *new([]wine.Wine), errors.New("ExecuteCsvImport - " + err.Error())
 	}
-	log.Infof(ctx, "ExecuteCsvImport - %d data lines read", len(wines))
+	log.Printf("ExecuteCsvImport - %d data lines read", len(wines))
 	return wines, nil
 }
 

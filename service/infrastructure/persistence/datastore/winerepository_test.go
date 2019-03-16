@@ -1,9 +1,11 @@
 package persistence_test
 
 import (
+	"context"
 	"testing"
+	"time"
 
-	"google.golang.org/appengine/datastore"
+	"cloud.google.com/go/datastore"
 
 	"github.com/stretchr/testify/assert"
 
@@ -15,7 +17,9 @@ import (
 func TestSaveWine(t *testing.T) {
 	t.Skip("persistence.SaveWine fails with 'service bridge HTTP failed'")
 
-	ctx := test.AnAppEngineTestContext()
+	timeout, _ := time.ParseDuration("500ms")
+	ctx, cancelFun := context.WithTimeout(nil, timeout)
+	client, _ := datastore.NewClient(ctx, "my-project-id")
 	aWine := test.AWine()
 
 	encodedKey, err := persistence.SaveWine(ctx, &aWine)
@@ -23,7 +27,8 @@ func TestSaveWine(t *testing.T) {
 
 	key, _ := datastore.DecodeKey(encodedKey)
 	var retrievedWine wine.Wine
-	datastore.Get(ctx, key, retrievedWine)
+	client.Get(ctx, key, retrievedWine)
 
 	assert.Equal(t, retrievedWine.Name, aWine.Name)
+	cancelFun()
 }

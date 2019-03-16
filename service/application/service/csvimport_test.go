@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"bufio"
+	"context"
 	"strings"
 	"testing"
 
@@ -13,7 +14,7 @@ import (
 func TestExecuteCsvImport(t *testing.T) {
 	file := test.ACsvImportFile()
 	reader := bufio.NewReader(strings.NewReader(file))
-	ctx := test.AnAppEngineTestContext()
+	ctx := context.Background()
 
 	wines, err := service.ExecuteCsvImport(ctx, reader)
 
@@ -24,7 +25,7 @@ func TestExecuteCsvImport(t *testing.T) {
 func TestExecuteCsvImportEmptyFile(t *testing.T) {
 	file := ""
 	reader := bufio.NewReader(strings.NewReader(file))
-	ctx := test.AnAppEngineTestContext()
+	ctx := context.Background()
 
 	wines, err := service.ExecuteCsvImport(ctx, reader)
 
