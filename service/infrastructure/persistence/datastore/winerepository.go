@@ -17,14 +17,6 @@ type WineRepository struct {
 
 // SaveTestWine adds a test entry in the Wine table.
 func (repository WineRepository) SaveTestWine(ctx context.Context) error {
-	client, err := datastore.NewClient(ctx, "my-project-id")
-	if err != nil {
-		log.Println("Datastore client error")
-		log.Fatal(err)
-	}
-
-	k := datastore.IncompleteKey(entityKind, nil)
-
 	storageLocation := wine.StorageLocation{Cellar: "Moiré", Position: "3"}
 	testWine := wine.NewWine()
 	testWine.Name = "Test Wine"
@@ -42,33 +34,32 @@ func (repository WineRepository) SaveTestWine(ctx context.Context) error {
 	testWine.Size = wine.BOTTLE
 	testWine.StorageLocation = storageLocation
 
-	_, err2 := client.Put(ctx, k, testWine)
-	return err2
+	_, err := repository.SaveWine(ctx, testWine)
+	return err
 }
 
 // GetWinesInStock returns the wines in the table with a non 0 quantity.
 func (repository WineRepository) GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
-	client, err := datastore.NewClient(ctx, "my-project-id")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	q := datastore.NewQuery(entityKind).Filter("Quantity >", 0)
 
-	_, err2 := client.GetAll(ctx, q, wines)
-	return err2
+	_, err := datastoreClient(ctx).GetAll(ctx, q, wines)
+	return err
 }
 
 // SaveWine save the wine in the database.
 func (repository WineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
-	client, err := datastore.NewClient(ctx, "my-project-id")
+	key, err := datastoreClient(ctx).Put(ctx, datastore.IncompleteKey(entityKind, nil), wine)
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	key := datastore.IncompleteKey(entityKind, nil)
-	if _, err2 := client.Put(ctx, key, wine); err != nil {
-		return "", err2
+		return "", err
 	}
 	return key.Encode(), nil
+}
+
+func datastoreClient(ctx context.Context) *datastore.Client {
+	client, err := datastore.NewClient(ctx, "cave-inventaire")
+	if err != nil {
+		log.Println("Datastore client error")
+		log.Fatal(err)
+	}
+	return client
 }

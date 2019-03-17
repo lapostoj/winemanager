@@ -2,8 +2,8 @@ package persistence_test
 
 import (
 	"context"
+	"log"
 	"testing"
-	"time"
 
 	"cloud.google.com/go/datastore"
 
@@ -15,21 +15,30 @@ import (
 )
 
 func TestSaveWine(t *testing.T) {
-	t.Skip("need to figure how to use the mock datastore")
-	repository := persistence.WineRepository{}
+	t.Skip("Need to run the datastore emulator to run it")
 
-	timeout, _ := time.ParseDuration("500ms")
-	ctx, cancelFun := context.WithTimeout(nil, timeout)
-	client, _ := datastore.NewClient(ctx, "my-project-id")
+	repository := persistence.WineRepository{}
 	aWine := test.AWine()
+	ctx := context.Background()
 
 	encodedKey, err := repository.SaveWine(ctx, &aWine)
 	assert.Nil(t, err)
 
 	key, _ := datastore.DecodeKey(encodedKey)
 	var retrievedWine wine.Wine
-	client.Get(ctx, key, retrievedWine)
+	if err := datastoreClient(ctx).Get(ctx, key, &retrievedWine); err != nil {
+		panic(err)
+	}
 
 	assert.Equal(t, retrievedWine.Name, aWine.Name)
-	cancelFun()
+	assert.Equal(t, retrievedWine.CreationTime.UTC().String(), aWine.CreationTime.UTC().String())
+}
+
+func datastoreClient(ctx context.Context) *datastore.Client {
+	client, err := datastore.NewClient(ctx, "cave-inventaire")
+	if err != nil {
+		log.Println("Datastore client error")
+		log.Fatal(err)
+	}
+	return client
 }
