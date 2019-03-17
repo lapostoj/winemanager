@@ -6,16 +6,19 @@ import (
 	"net/http"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
-	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 	"github.com/lapostoj/winemanager/service/presentation/api/request"
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 )
 
+type WineHandler struct {
+	WineRepository wine.Repository
+}
+
 // Test handles the GET calls to '/api/test'
-func Test(w http.ResponseWriter, r *http.Request) {
+func (handler WineHandler) Test(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	if err := persistence.TestWine(ctx); err != nil {
+	if err := handler.WineRepository.SaveTestWine(ctx); err != nil {
 		log.Printf("TestWine - persistence: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -25,13 +28,13 @@ func Test(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetWines handles the GET calls to '/api/wines' and return the stored wines (non 0 quantity)
-func GetWines(w http.ResponseWriter, r *http.Request) {
+func (handler WineHandler) GetWines(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	w.Header().Set("Access-Control-Allow-Origin", Website)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	var wines []wine.Wine
-	if err := persistence.GetWinesInStock(ctx, &wines); err != nil {
+	if err := handler.WineRepository.GetWinesInStock(ctx, &wines); err != nil {
 		log.Printf("GetWines - persistence: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -48,14 +51,14 @@ func GetWines(w http.ResponseWriter, r *http.Request) {
 }
 
 // OptionsWines handles the OPTIONS calls to '/api/wines' and check their headers
-func OptionsWines(w http.ResponseWriter, r *http.Request) {
+func (handler WineHandler) OptionsWines(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", Website)
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 // PostWines handles the POST calls to '/api/wines' and add the wine in the database
-func PostWines(w http.ResponseWriter, r *http.Request) {
+func (handler WineHandler) PostWines(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var postWineRequest request.PostWineRequest
 
@@ -68,7 +71,7 @@ func PostWines(w http.ResponseWriter, r *http.Request) {
 	}
 
 	wine := postWineRequest.NewWine()
-	key, err := persistence.SaveWine(ctx, wine)
+	key, err := handler.WineRepository.SaveWine(ctx, wine)
 	if err != nil {
 		log.Printf("PostWines - persistence: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

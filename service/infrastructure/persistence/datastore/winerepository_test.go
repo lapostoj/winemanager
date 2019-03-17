@@ -15,14 +15,15 @@ import (
 )
 
 func TestSaveWine(t *testing.T) {
-	t.Skip("persistence.SaveWine fails with 'service bridge HTTP failed'")
+	t.Skip("need to figure how to use the mock datastore")
+	repository := persistence.WineRepository{}
 
 	timeout, _ := time.ParseDuration("500ms")
 	ctx, cancelFun := context.WithTimeout(nil, timeout)
 	client, _ := datastore.NewClient(ctx, "my-project-id")
 	aWine := test.AWine()
 
-	encodedKey, err := persistence.SaveWine(ctx, &aWine)
+	encodedKey, err := repository.SaveWine(ctx, &aWine)
 	assert.Nil(t, err)
 
 	key, _ := datastore.DecodeKey(encodedKey)

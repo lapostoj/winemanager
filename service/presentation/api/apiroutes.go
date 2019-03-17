@@ -2,6 +2,9 @@ package api
 
 import (
 	"net/http"
+
+	"github.com/lapostoj/winemanager/service/application/service"
+	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 )
 
 // Website is the url expected to use for the Access-Control-Allow-Origin header
@@ -24,30 +27,30 @@ var APIRoutes = Routes{
 		"Welcome",
 		http.MethodGet,
 		"/api/test",
-		Test,
+		WineHandler{WineRepository: persistence.WineRepository{}}.Test,
 	},
 	Route{
 		"GetWines",
 		http.MethodGet,
 		"/api/wines",
-		GetWines,
+		WineHandler{WineRepository: persistence.WineRepository{}}.GetWines,
 	},
 	Route{
 		"OptionsWines",
 		http.MethodOptions,
 		"/api/wines",
-		OptionsWines,
+		WineHandler{WineRepository: persistence.WineRepository{}}.OptionsWines,
 	},
 	Route{
 		"PostWines",
 		http.MethodPost,
 		"/api/wines",
-		PostWines,
+		WineHandler{WineRepository: persistence.WineRepository{}}.PostWines,
 	},
 	Route{
 		"PostImport",
 		http.MethodPost,
 		"/api/import",
-		PostImport,
+		ImportHandler{CsvImport: service.CsvImport{WineRepository: persistence.WineRepository{}}}.PostImport,
 	},
 }

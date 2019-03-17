@@ -9,16 +9,20 @@ import (
 	"time"
 
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
-	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 )
+
+type CsvImportInterface interface {
+	ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error)
+}
 
 // CsvImport implements a service to parse a CSV file and import in in the db.
 type CsvImport struct {
+	WineRepository wine.Repository
 }
 
 // ExecuteCsvImport executes the service.
-func ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
-	wines, err := readLineByLine(ctx, reader)
+func (service CsvImport) ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
+	wines, err := service.readLineByLine(ctx, reader)
 	if err != nil {
 		return *new([]wine.Wine), errors.New("ExecuteCsvImport - " + err.Error())
 	}
@@ -26,7 +30,7 @@ func ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, e
 	return wines, nil
 }
 
-func readLineByLine(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
+func (service CsvImport) readLineByLine(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
 	linesRead := 0
@@ -38,7 +42,7 @@ func readLineByLine(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, err
 				return wines, errors.New("Invalid data")
 			}
 		} else {
-			wine := persistDataLine(ctx, line)
+			wine := service.persistDataLine(ctx, line)
 			wines = append(wines, *wine)
 		}
 		linesRead++
@@ -51,10 +55,10 @@ func validateData(header string, referenceHeaders []string) bool {
 	return EqualsStringSlices(referenceHeaders, headers)
 }
 
-func persistDataLine(ctx context.Context, line string) *wine.Wine {
+func (service CsvImport) persistDataLine(ctx context.Context, line string) *wine.Wine {
 	data := parseLine(line)
 	wine := dataToWine(data)
-	persistence.SaveWine(ctx, wine)
+	service.WineRepository.SaveWine(ctx, wine)
 	return wine
 }
 

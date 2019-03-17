@@ -12,9 +12,13 @@ import (
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 )
 
+type ImportHandler struct {
+	CsvImport service.CsvImportInterface
+}
+
 // PostImport handles the POST calls to '/api/import' and parse the file to put it in the db.
 // Inspired from https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/04.5.html.
-func PostImport(w http.ResponseWriter, r *http.Request) {
+func (handler ImportHandler) PostImport(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	w.Header().Set("Access-Control-Allow-Origin", Website)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -40,12 +44,13 @@ func PostImport(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid file", http.StatusBadRequest)
 		return
 	}
-	wines, err := service.ExecuteCsvImport(ctx, bufio.NewReader(file))
+	wines, err := handler.CsvImport.ExecuteCsvImport(ctx, bufio.NewReader(file))
 	if err != nil {
 		log.Printf("PostImport - %s", err.Error())
 		http.Error(w, "Invalid data", http.StatusBadRequest)
 		return
 	}
+	log.Printf("Wines length - %d", len(wines))
 
 	response, err := json.Marshal(response.NewWineResponses(wines))
 	if err != nil {

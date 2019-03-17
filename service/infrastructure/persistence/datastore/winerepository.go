@@ -15,8 +15,8 @@ const entityKind = "Wine"
 type WineRepository struct {
 }
 
-// TestWine adds a test entry in the Wine table.
-func TestWine(ctx context.Context) error {
+// SaveTestWine adds a test entry in the Wine table.
+func (repository WineRepository) SaveTestWine(ctx context.Context) error {
 	client, err := datastore.NewClient(ctx, "my-project-id")
 	if err != nil {
 		log.Println("Datastore client error")
@@ -47,7 +47,7 @@ func TestWine(ctx context.Context) error {
 }
 
 // GetWinesInStock returns the wines in the table with a non 0 quantity.
-func GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
+func (repository WineRepository) GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
 	client, err := datastore.NewClient(ctx, "my-project-id")
 	if err != nil {
 		log.Fatal(err)
@@ -60,7 +60,7 @@ func GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
 }
 
 // SaveWine save the wine in the database.
-func SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
+func (repository WineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
 	client, err := datastore.NewClient(ctx, "my-project-id")
 	if err != nil {
 		log.Fatal(err)

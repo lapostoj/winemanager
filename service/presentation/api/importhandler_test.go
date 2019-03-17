@@ -1,6 +1,7 @@
 package api_test
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -14,26 +15,41 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
+	"github.com/lapostoj/winemanager/service/domain/model/wine"
 	"github.com/lapostoj/winemanager/service/presentation/api"
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
+	"github.com/lapostoj/winemanager/service/test"
 )
+
+type MockCsvImport struct {
+	mock.Mock
+}
+
+func (mock *MockCsvImport) ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
+	args := mock.Called(ctx, reader)
+	return args.Get(0).([]wine.Wine), args.Error(1)
+}
 
 func TestPostImport(t *testing.T) {
 	ctx := context.Background()
+	csvImport := new(MockCsvImport)
+	handler := api.ImportHandler{CsvImport: csvImport}
 	recorder := httptest.NewRecorder()
 	csvFile := openCsvTestFile()
+	csvImport.On("ExecuteCsvImport", ctx, mock.Anything).Return([]wine.Wine{test.AWine(), test.AWine()}, nil)
 
 	var body bytes.Buffer
-	w := multipart.NewWriter(&body)
-	createFormCsvFile(w, "file", csvFile)
-	w.Close()
+	writer := multipart.NewWriter(&body)
+	createFormCsvFile(writer, "file", csvFile)
+	writer.Close()
 
 	request := httptest.NewRequest("POST", "/api/import", &body).WithContext(ctx)
 	request.Header.Set("Origin", api.Website)
-	request.Header.Set("Content-Type", w.FormDataContentType())
+	request.Header.Set("Content-Type", writer.FormDataContentType())
 
-	api.PostImport(recorder, request)
+	handler.PostImport(recorder, request)
 
 	buf := new(bytes.Buffer)
 	result := recorder.Result()
@@ -44,7 +60,7 @@ func TestPostImport(t *testing.T) {
 	assert.Equal(t, result.StatusCode, 201)
 	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.Website)
 	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
-	assert.Equal(t, len(wineResponses), 3)
+	assert.Equal(t, len(wineResponses), 2)
 }
 
 func openCsvTestFile() *os.File {
