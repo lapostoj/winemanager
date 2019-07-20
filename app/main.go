@@ -14,8 +14,9 @@ const defaultPort = "8080"
 // Init is called before the application starts.
 func main() {
 	router := presentation.NewRouter()
+	frontend_folder := os.Getenv("FRONTEND_FOLDER")
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./app/")))
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir(frontend_folder)))
 	http.Handle("/api/", router)
 
 	port := os.Getenv("PORT")

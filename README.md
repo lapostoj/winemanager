@@ -19,7 +19,7 @@ The project is made with an upload on Google appengine in mind.
 ### Serve the app
 
 ```bash
-go run cmd/main.go
+FRONTEND_FOLDER=./app/frontend/ go run app/main.go
 ```
 
 ### Run the tests
@@ -30,10 +30,9 @@ go test ./...
 
 ## Deploy
 
-The application expects the following in the `cmd` folder:
+The application expects the following in the `app` folder:
 
-- an appengine config `app.yaml`.
-- a static frontend part to live in an `app` folder to serve (with `index.html` and `notfound.html`)
+- a static frontend part to live in an `frontend` folder to serve (with `index.html` and `notfound.html`)
 
 ```bash
 gcloud app deploy
