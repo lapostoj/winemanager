@@ -16,7 +16,7 @@ type CreateCellar struct {
 	CellarRepository cellar.Repository
 }
 
-// Execute returns the cellars with the provided accountID.
+// Execute persists the passed cellar and return its id.
 func (service CreateCellar) Execute(ctx context.Context, cellar *cellar.Cellar) (string, error) {
 	return service.CellarRepository.SaveCellar(ctx, cellar)
 }

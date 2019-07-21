@@ -8,13 +8,13 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	"github.com/lapostoj/winemanager/service/application/service"
+	"github.com/lapostoj/winemanager/service/application/service/csvimport"
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 )
 
 // ImportHandler defines the interface for a ImportHandler
 type ImportHandler struct {
-	CsvImport service.CsvImportInterface
+	CsvImport csvimport.CsvImportInterface
 }
 
 // PostImport handles the POST calls to '/api/import' and parse the file to put it in the db.
@@ -45,7 +45,7 @@ func (handler ImportHandler) PostImport(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, "Invalid file", http.StatusBadRequest)
 		return
 	}
-	wines, err := handler.CsvImport.ExecuteCsvImport(ctx, bufio.NewReader(file))
+	wines, err := handler.CsvImport.Execute(ctx, bufio.NewReader(file))
 	if err != nil {
 		log.Printf("PostImport - %s", err.Error())
 		http.Error(w, "Invalid data", http.StatusBadRequest)
