@@ -30,7 +30,7 @@ func (handler WineHandler) Test(w http.ResponseWriter, r *http.Request) {
 // GetWines handles the GET calls to '/api/wines' and return the stored wines (non 0 quantity)
 func (handler WineHandler) GetWines(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	w.Header().Set("Access-Control-Allow-Origin", Website)
+	w.Header().Set("Access-Control-Allow-Origin", GetClientUrl())
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	var wines []wine.Wine
@@ -52,7 +52,7 @@ func (handler WineHandler) GetWines(w http.ResponseWriter, r *http.Request) {
 
 // OptionsWines handles the OPTIONS calls to '/api/wines' and check their headers
 func (handler WineHandler) OptionsWines(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", Website)
+	w.Header().Set("Access-Control-Allow-Origin", GetClientUrl())
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }

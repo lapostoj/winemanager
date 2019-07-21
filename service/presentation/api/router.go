@@ -2,14 +2,12 @@ package api
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/lapostoj/winemanager/service/application/service"
 	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 )
-
-// Website is the url expected to use for the Access-Control-Allow-Origin header
-const Website = "https://cave-inventaire.appspot.com"
 
 // Route structure for API.
 type Route struct {
@@ -17,6 +15,13 @@ type Route struct {
 	Method      string
 	Pattern     string
 	HandlerFunc http.HandlerFunc
+}
+
+func GetClientUrl() string {
+	if value, ok := os.LookupEnv("CLIENT_URL"); ok {
+		return value
+	}
+	return "http://localhost:3000"
 }
 
 // NewRouter creates a router to mach routes and handlers
