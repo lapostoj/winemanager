@@ -19,6 +19,9 @@ type MockCellarHandler struct {
 func (mock MockCellarHandler) QueryCellars(w http.ResponseWriter, r *http.Request) {
 }
 
+func (mock MockCellarHandler) PostCellar(w http.ResponseWriter, r *http.Request) {
+}
+
 func TestNewRouterHandlesPostImport(t *testing.T) {
 	var body bytes.Buffer
 	var match mux.RouteMatch
@@ -39,6 +42,17 @@ func TestNewRouterHandlesGetCellar(t *testing.T) {
 
 	assert.True(t, router.Match(request, &match))
 	assert.Equal(t, "GetCellars", match.Route.GetName())
+}
+
+func TestNewRouterHandlesPostCellar(t *testing.T) {
+	var body bytes.Buffer
+	var match mux.RouteMatch
+	cellarHandler := new(MockCellarHandler)
+	router := api.NewRouter(cellarHandler)
+	request := httptest.NewRequest("POST", "/api/cellars", &body)
+
+	assert.True(t, router.Match(request, &match))
+	assert.Equal(t, "PostCellar", match.Route.GetName())
 }
 
 func TestNewRouterHandlesGetWines(t *testing.T) {

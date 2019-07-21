@@ -7,8 +7,8 @@ import (
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
 )
 
-// entityKind defines the name of the entity in database.
-const entityKind = "Wine"
+// wineEntityKind defines the name of the entity in database.
+const wineEntityKind = "Wine"
 
 // WineRepository implements a Repository for the Wine table.
 type WineRepository struct {
@@ -33,7 +33,7 @@ func (repository WineRepository) SaveTestWine(ctx context.Context) error {
 
 // GetWinesInStock returns the wines in the table with a non 0 quantity.
 func (repository WineRepository) GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
-	q := datastore.NewQuery(entityKind).Filter("Quantity >", 0)
+	q := datastore.NewQuery(wineEntityKind).Filter("Quantity >", 0)
 
 	_, err := DatastoreClient(ctx).GetAll(ctx, q, wines)
 	return err
@@ -41,7 +41,7 @@ func (repository WineRepository) GetWinesInStock(ctx context.Context, wines *[]w
 
 // SaveWine save the wine in the database.
 func (repository WineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
-	key, err := DatastoreClient(ctx).Put(ctx, datastore.IncompleteKey(entityKind, nil), wine)
+	key, err := DatastoreClient(ctx).Put(ctx, datastore.IncompleteKey(wineEntityKind, nil), wine)
 	if err != nil {
 		return "", err
 	}
