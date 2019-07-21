@@ -46,7 +46,7 @@ func TestPostImport(t *testing.T) {
 	writer.Close()
 
 	request := httptest.NewRequest("POST", "/api/import", &body).WithContext(ctx)
-	request.Header.Set("Origin", api.Website)
+	request.Header.Set("Origin", api.GetClientUrl())
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 
 	handler.PostImport(recorder, request)
@@ -58,7 +58,7 @@ func TestPostImport(t *testing.T) {
 	json.Unmarshal(buf.Bytes(), &wineResponses)
 
 	assert.Equal(t, result.StatusCode, 201)
-	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.Website)
+	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.GetClientUrl())
 	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
 	assert.Equal(t, len(wineResponses), 2)
 }

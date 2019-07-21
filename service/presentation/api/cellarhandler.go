@@ -24,7 +24,7 @@ type CellarHandler struct {
 // QueryCellars handles the GET calls to '/api/cellars' and return the cellars matching the query
 func (handler CellarHandler) QueryCellars(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	w.Header().Set("Access-Control-Allow-Origin", Website)
+	w.Header().Set("Access-Control-Allow-Origin", GetClientUrl())
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	values, err := url.ParseQuery(r.URL.RawQuery)

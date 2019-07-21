@@ -33,7 +33,7 @@ func TestQueryCellars(t *testing.T) {
 
 	var body bytes.Buffer
 	request := httptest.NewRequest("GET", "/api/cellars?accountID=123", &body).WithContext(ctx)
-	request.Header.Set("Origin", api.Website)
+	request.Header.Set("Origin", api.GetClientUrl())
 
 	cellars := []cellar.Cellar{test.ACellar()}
 	getCellar.On("ForAccountID", ctx, 123).Return(cellars, nil)
@@ -47,7 +47,7 @@ func TestQueryCellars(t *testing.T) {
 	json.Unmarshal(buf.Bytes(), &cellarResponses)
 
 	assert.Equal(t, result.StatusCode, 200)
-	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.Website)
+	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.GetClientUrl())
 	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
 	assert.Equal(t, len(cellarResponses), 1)
 }
