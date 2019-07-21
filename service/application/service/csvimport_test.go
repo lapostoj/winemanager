@@ -35,12 +35,12 @@ func (mock *MockWineRepository) GetWinesInStock(ctx context.Context, wines *[]wi
 func TestExecuteCsvImport(t *testing.T) {
 	ctx := context.Background()
 	wineRepository := new(MockWineRepository)
-	service := service.CsvImport{WineRepository: wineRepository}
+	csvImportService := service.CsvImport{WineRepository: wineRepository}
 	file := test.ACsvImportFile()
 	reader := bufio.NewReader(strings.NewReader(file))
 	wineRepository.On("SaveWine", ctx, mock.Anything).Return("id", nil)
 
-	wines, err := service.ExecuteCsvImport(ctx, reader)
+	wines, err := csvImportService.ExecuteCsvImport(ctx, reader)
 
 	assert.Nil(t, err)
 	assert.Equal(t, len(wines), 3)
@@ -50,11 +50,11 @@ func TestExecuteCsvImport(t *testing.T) {
 func TestExecuteCsvImportEmptyFile(t *testing.T) {
 	ctx := context.Background()
 	wineRepository := new(MockWineRepository)
-	service := service.CsvImport{WineRepository: wineRepository}
+	csvImportService := service.CsvImport{WineRepository: wineRepository}
 	file := ""
 	reader := bufio.NewReader(strings.NewReader(file))
 
-	wines, err := service.ExecuteCsvImport(ctx, reader)
+	wines, err := csvImportService.ExecuteCsvImport(ctx, reader)
 
 	assert.Nil(t, err)
 	assert.Equal(t, len(wines), 0)

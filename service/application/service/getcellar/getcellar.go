@@ -1,4 +1,4 @@
-package service
+package getcellar
 
 import (
 	"context"
@@ -13,13 +13,13 @@ type GetCellarService interface {
 
 // GetCellar implements a service to get Cellars
 type GetCellar struct {
-	Repository cellar.Repository
+	CellarRepository cellar.Repository
 }
 
 // ForAccountID returns the cellars with the provided accountID.
 func (service GetCellar) ForAccountID(ctx context.Context, accountID int) ([]cellar.Cellar, error) {
 	var cellars []cellar.Cellar
-	err := service.Repository.FindCellarsForAccountID(ctx, &cellars, accountID)
+	err := service.CellarRepository.FindCellarsForAccountID(ctx, &cellars, accountID)
 
 	return cellars, err
 }

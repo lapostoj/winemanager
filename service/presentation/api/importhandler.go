@@ -12,6 +12,7 @@ import (
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 )
 
+// ImportHandler defines the interface for a ImportHandler
 type ImportHandler struct {
 	CsvImport service.CsvImportInterface
 }
@@ -20,7 +21,7 @@ type ImportHandler struct {
 // Inspired from https://astaxie.gitbooks.io/build-web-application-with-golang/content/en/04.5.html.
 func (handler ImportHandler) PostImport(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	w.Header().Set("Access-Control-Allow-Origin", GetClientUrl())
+	w.Header().Set("Access-Control-Allow-Origin", GetClientURL())
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	if err := validateHeaders(r); err != nil {
@@ -65,7 +66,7 @@ func (handler ImportHandler) PostImport(w http.ResponseWriter, r *http.Request) 
 
 func validateHeaders(r *http.Request) error {
 	originHeader := "Origin"
-	if r.Header.Get(originHeader) == GetClientUrl() {
+	if r.Header.Get(originHeader) == GetClientURL() {
 		return nil
 	}
 	return errors.New("'Origin': " + r.Header.Get(originHeader))

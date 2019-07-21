@@ -17,7 +17,8 @@ type Route struct {
 	HandlerFunc http.HandlerFunc
 }
 
-func GetClientUrl() string {
+// GetClientURL returns the CLIENT_URL from the env variables or a default
+func GetClientURL() string {
 	if value, ok := os.LookupEnv("CLIENT_URL"); ok {
 		return value
 	}
@@ -40,6 +41,12 @@ func NewRouter(cellarHandler CellarHanderInterface) *mux.Router {
 			http.MethodGet,
 			"/api/cellars",
 			cellarHandler.QueryCellars,
+		},
+		Route{
+			"PostCellar",
+			http.MethodPost,
+			"/api/cellars",
+			cellarHandler.PostCellar,
 		},
 		Route{
 			"GetWines",

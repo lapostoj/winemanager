@@ -20,20 +20,30 @@ type MockGetCellar struct {
 	mock.Mock
 }
 
+type MockCreateCellar struct {
+	mock.Mock
+}
+
 func (mock MockGetCellar) ForAccountID(ctx context.Context, accountID int) ([]cellar.Cellar, error) {
 	args := mock.Called(ctx, accountID)
 	return args.Get(0).([]cellar.Cellar), args.Error(1)
+}
+
+func (mock MockCreateCellar) Execute(ctx context.Context, cellar *cellar.Cellar) (string, error) {
+	args := mock.Called(ctx, cellar)
+	return args.Get(0).(string), args.Error(1)
 }
 
 func TestQueryCellars(t *testing.T) {
 	ctx := context.Background()
 	recorder := httptest.NewRecorder()
 	getCellar := new(MockGetCellar)
-	handler := api.CellarHandler{GetCellar: getCellar}
+	createCellar := new(MockCreateCellar)
+	handler := api.CellarHandler{GetCellar: getCellar, CreateCellar: createCellar}
 
 	var body bytes.Buffer
 	request := httptest.NewRequest("GET", "/api/cellars?accountID=123", &body).WithContext(ctx)
-	request.Header.Set("Origin", api.GetClientUrl())
+	request.Header.Set("Origin", api.GetClientURL())
 
 	cellars := []cellar.Cellar{test.ACellar()}
 	getCellar.On("ForAccountID", ctx, 123).Return(cellars, nil)
@@ -47,7 +57,38 @@ func TestQueryCellars(t *testing.T) {
 	json.Unmarshal(buf.Bytes(), &cellarResponses)
 
 	assert.Equal(t, result.StatusCode, 200)
-	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.GetClientUrl())
+	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.GetClientURL())
 	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
 	assert.Equal(t, len(cellarResponses), 1)
+}
+
+func TestPostCellar(t *testing.T) {
+	ctx := context.Background()
+	recorder := httptest.NewRecorder()
+	getCellar := new(MockGetCellar)
+	createCellar := new(MockCreateCellar)
+	handler := api.CellarHandler{GetCellar: getCellar, CreateCellar: createCellar}
+	expectedCellar := test.ACellar()
+
+	bodyBytes, err := json.Marshal(expectedCellar)
+	if err != nil {
+		panic(err)
+	}
+	body := bytes.NewBuffer(bodyBytes)
+	request := httptest.NewRequest("POST", "/api/cellars", body).WithContext(ctx)
+	request.Header.Set("Origin", api.GetClientURL())
+
+	createCellar.On("Execute", ctx, mock.MatchedBy(func(cellar *cellar.Cellar) bool {
+		return cellar.Name == expectedCellar.Name && cellar.AccountID == expectedCellar.AccountID
+	})).Return("id", nil)
+
+	handler.PostCellar(recorder, request)
+
+	buf := new(bytes.Buffer)
+	result := recorder.Result()
+	buf.ReadFrom(result.Body)
+	cellarResponses := []response.CellarResponse{}
+	json.Unmarshal(buf.Bytes(), &cellarResponses)
+
+	assert.Equal(t, result.StatusCode, 201)
 }
