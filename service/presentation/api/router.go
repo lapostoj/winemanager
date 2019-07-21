@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/lapostoj/winemanager/service/application/service"
+	"github.com/lapostoj/winemanager/service/application/service/csvimport"
 	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 )
 
@@ -70,7 +70,7 @@ func NewRouter(cellarHandler CellarHanderInterface) *mux.Router {
 			"PostImport",
 			http.MethodPost,
 			"/api/import",
-			ImportHandler{CsvImport: service.CsvImport{WineRepository: persistence.WineRepository{}}}.PostImport,
+			ImportHandler{CsvImport: csvimport.CsvImport{WineRepository: persistence.WineRepository{}}}.PostImport,
 		},
 	}
 

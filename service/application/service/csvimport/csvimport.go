@@ -1,4 +1,4 @@
-package service
+package csvimport
 
 import (
 	"bufio"
@@ -13,7 +13,7 @@ import (
 
 // CsvImportInterface defines the interface for a CsvImportInterface
 type CsvImportInterface interface {
-	ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error)
+	Execute(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error)
 }
 
 // CsvImport implements a service to parse a CSV file and import in in the db.
@@ -21,13 +21,13 @@ type CsvImport struct {
 	WineRepository wine.Repository
 }
 
-// ExecuteCsvImport executes the service.
-func (service CsvImport) ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
+// Execute executes the service.
+func (service CsvImport) Execute(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
 	wines, err := service.readLineByLine(ctx, reader)
 	if err != nil {
-		return *new([]wine.Wine), errors.New("ExecuteCsvImport - " + err.Error())
+		return *new([]wine.Wine), errors.New("CsvImport Execute - " + err.Error())
 	}
-	log.Printf("ExecuteCsvImport - %d data lines read", len(wines))
+	log.Printf("CsvImport Execute - %d data lines read", len(wines))
 	return wines, nil
 }
 

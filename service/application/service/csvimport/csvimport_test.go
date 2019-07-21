@@ -1,4 +1,4 @@
-package service_test
+package csvimport_test
 
 import (
 	"bufio"
@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/lapostoj/winemanager/service/application/service"
+	"github.com/lapostoj/winemanager/service/application/service/csvimport"
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
 	"github.com/lapostoj/winemanager/service/test"
 	"github.com/stretchr/testify/assert"
@@ -32,29 +32,29 @@ func (mock *MockWineRepository) GetWines(ctx context.Context, wines *[]wine.Wine
 	return args.Error(0)
 }
 
-func TestExecuteCsvImport(t *testing.T) {
+func TestExecute(t *testing.T) {
 	ctx := context.Background()
 	wineRepository := new(MockWineRepository)
-	csvImportService := service.CsvImport{WineRepository: wineRepository}
+	csvImportService := csvimport.CsvImport{WineRepository: wineRepository}
 	file := test.ACsvImportFile()
 	reader := bufio.NewReader(strings.NewReader(file))
 	wineRepository.On("SaveWine", ctx, mock.Anything).Return("id", nil)
 
-	wines, err := csvImportService.ExecuteCsvImport(ctx, reader)
+	wines, err := csvImportService.Execute(ctx, reader)
 
 	assert.Nil(t, err)
 	assert.Equal(t, len(wines), 3)
 	wineRepository.AssertCalled(t, "SaveWine", ctx, mock.Anything)
 }
 
-func TestExecuteCsvImportEmptyFile(t *testing.T) {
+func TestExecuteWithEmptyFile(t *testing.T) {
 	ctx := context.Background()
 	wineRepository := new(MockWineRepository)
-	csvImportService := service.CsvImport{WineRepository: wineRepository}
+	csvImportService := csvimport.CsvImport{WineRepository: wineRepository}
 	file := ""
 	reader := bufio.NewReader(strings.NewReader(file))
 
-	wines, err := csvImportService.ExecuteCsvImport(ctx, reader)
+	wines, err := csvImportService.Execute(ctx, reader)
 
 	assert.Nil(t, err)
 	assert.Equal(t, len(wines), 0)

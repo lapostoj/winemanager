@@ -27,7 +27,7 @@ type MockCsvImport struct {
 	mock.Mock
 }
 
-func (mock *MockCsvImport) ExecuteCsvImport(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
+func (mock *MockCsvImport) Execute(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error) {
 	args := mock.Called(ctx, reader)
 	return args.Get(0).([]wine.Wine), args.Error(1)
 }
@@ -38,7 +38,7 @@ func TestPostImport(t *testing.T) {
 	handler := api.ImportHandler{CsvImport: csvImport}
 	recorder := httptest.NewRecorder()
 	csvFile := openCsvTestFile()
-	csvImport.On("ExecuteCsvImport", ctx, mock.Anything).Return([]wine.Wine{test.AWine(), test.AWine()}, nil)
+	csvImport.On("Execute", ctx, mock.Anything).Return([]wine.Wine{test.AWine(), test.AWine()}, nil)
 
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
