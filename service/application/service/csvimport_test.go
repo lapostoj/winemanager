@@ -27,7 +27,7 @@ func (mock *MockWineRepository) SaveTestWine(ctx context.Context) error {
 	return args.Error(0)
 }
 
-func (mock *MockWineRepository) GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
+func (mock *MockWineRepository) GetWines(ctx context.Context, wines *[]wine.Wine) error {
 	args := mock.Called(ctx, wines)
 	return args.Error(0)
 }
