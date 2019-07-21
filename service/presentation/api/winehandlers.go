@@ -28,14 +28,14 @@ func (handler WineHandler) Test(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("TestWine added"))
 }
 
-// GetWines handles the GET calls to '/api/wines' and return the stored wines (non 0 quantity)
+// GetWines handles the GET calls to '/api/wines' and return the known wines
 func (handler WineHandler) GetWines(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	w.Header().Set("Access-Control-Allow-Origin", GetClientURL())
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	var wines []wine.Wine
-	if err := handler.WineRepository.GetWinesInStock(ctx, &wines); err != nil {
+	if err := handler.WineRepository.GetWines(ctx, &wines); err != nil {
 		log.Printf("GetWines - persistence: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

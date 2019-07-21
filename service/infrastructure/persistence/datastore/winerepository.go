@@ -31,9 +31,9 @@ func (repository WineRepository) SaveTestWine(ctx context.Context) error {
 	return err
 }
 
-// GetWinesInStock returns the wines in the table with a non 0 quantity.
-func (repository WineRepository) GetWinesInStock(ctx context.Context, wines *[]wine.Wine) error {
-	q := datastore.NewQuery(wineEntityKind).Filter("Quantity >", 0)
+// GetWines returns all the wines in the table.
+func (repository WineRepository) GetWines(ctx context.Context, wines *[]wine.Wine) error {
+	q := datastore.NewQuery(wineEntityKind)
 
 	_, err := DatastoreClient(ctx).GetAll(ctx, q, wines)
 	return err
