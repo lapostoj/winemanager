@@ -6,6 +6,7 @@ import (
 
 	"github.com/lapostoj/winemanager/service/application/service/getcellar"
 	"github.com/lapostoj/winemanager/service/domain/model/cellar"
+	"github.com/lapostoj/winemanager/service/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -21,6 +22,7 @@ func (mock *MockCellarRepository) SaveCellar(ctx context.Context, cellar *cellar
 
 func (mock *MockCellarRepository) FindCellarsForAccountID(ctx context.Context, cellars *[]cellar.Cellar, accountId int) error {
 	args := mock.Called(ctx, cellars, accountId)
+	*cellars = append(*cellars, test.ACellar(), test.ACellar())
 	return args.Error(0)
 }
 
@@ -35,5 +37,6 @@ func TestGetCellar(t *testing.T) {
 	cellars, err := getCellarService.ForAccountID(ctx, accountId)
 
 	assert.Nil(t, err)
+	assert.Equal(t, len(cellars), 2)
 	cellarRepository.AssertCalled(t, "FindCellarsForAccountID", ctx, &cellars, accountId)
 }
