@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/lapostoj/winemanager/service/application/service/createbottle"
 	"github.com/lapostoj/winemanager/service/application/service/createcellar"
 	"github.com/lapostoj/winemanager/service/application/service/createwine"
+	"github.com/lapostoj/winemanager/service/application/service/getbottles"
 	"github.com/lapostoj/winemanager/service/application/service/getcellar"
 	"github.com/lapostoj/winemanager/service/application/service/getwines"
 	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
@@ -29,7 +31,12 @@ func main() {
 	createWineService := createwine.CreateWine{WineRepository: wineRepository}
 	wineHandler := api.WineHandler{GetWines: getWinesService, CreateWine: createWineService}
 
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleRepository := persistence.BottleRepository{}
+	getBottleService := getbottles.GetBottles{BottleRepository: bottleRepository}
+	createBottleService := createbottle.CreateBottle{BottleRepository: bottleRepository}
+	bottleHandler := api.BottleHandler{GetBottles: getBottleService, CreateBottle: createBottleService}
+
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(frontendFolder)))
 	http.Handle("/api/", router)
