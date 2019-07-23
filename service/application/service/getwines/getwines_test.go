@@ -20,11 +20,6 @@ func (mock *MockWineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (
 	return args.String(0), args.Error(1)
 }
 
-func (mock *MockWineRepository) SaveTestWine(ctx context.Context) error {
-	args := mock.Called(ctx)
-	return args.Error(0)
-}
-
 func (mock *MockWineRepository) GetWines(ctx context.Context, wines *[]wine.Wine) error {
 	args := mock.Called(ctx, wines)
 	*wines = append(*wines, test.AWine(), test.AWine())

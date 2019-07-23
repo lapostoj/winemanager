@@ -7,6 +7,7 @@ import (
 	"cloud.google.com/go/datastore"
 )
 
+// DatastoreClient initiate the client connecting to a datastore
 func DatastoreClient(ctx context.Context) *datastore.Client {
 	client, err := datastore.NewClient(ctx, "cave-inventaire")
 	if err != nil {

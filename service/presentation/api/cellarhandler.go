@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/lapostoj/winemanager/service/application/service/getcellar"
 	"github.com/lapostoj/winemanager/service/application/service/createcellar"
+	"github.com/lapostoj/winemanager/service/application/service/getcellar"
 	"github.com/lapostoj/winemanager/service/infrastructure/utils"
 
 	"github.com/lapostoj/winemanager/service/presentation/api/request"
@@ -35,7 +35,7 @@ func (handler CellarHandler) QueryCellars(w http.ResponseWriter, r *http.Request
 	values, err := url.ParseQuery(r.URL.RawQuery)
 
 	if err != nil || values.Get("accountID") == "" {
-		log.Printf("GetCellars - parseQuery: %q\n", err)
+		log.Printf("QueryCellars - parseQuery: %q\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -44,14 +44,14 @@ func (handler CellarHandler) QueryCellars(w http.ResponseWriter, r *http.Request
 
 	cellars, err := handler.GetCellar.ForAccountID(ctx, accountID)
 	if err != nil {
-		log.Printf("GetCellars - service: %q\n", err)
+		log.Printf("QueryCellars - service: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	response, err := json.Marshal(response.NewCellarResponses(cellars))
 	if err != nil {
-		log.Printf("GetCellars - marshal: %q\n", err)
+		log.Printf("QueryCellars - marshal: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -75,7 +75,7 @@ func (handler CellarHandler) PostCellar(w http.ResponseWriter, r *http.Request) 
 	cellar := postCellarRequest.NewCellar()
 	key, err := handler.CreateCellar.Execute(ctx, cellar)
 	if err != nil {
-		log.Printf("PostCellar - persistence: %q\n", err)
+		log.Printf("PostCellar - service: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
