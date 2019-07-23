@@ -38,12 +38,23 @@ func (mock MockWineHandler) PostWine(w http.ResponseWriter, r *http.Request) {
 func (mock MockWineHandler) PostTest(w http.ResponseWriter, r *http.Request) {
 }
 
+type MockBottleHandler struct {
+	mock.Mock
+}
+
+func (mock MockBottleHandler) QueryBottles(w http.ResponseWriter, r *http.Request) {
+}
+
+func (mock MockBottleHandler) PostBottle(w http.ResponseWriter, r *http.Request) {
+}
+
 func TestNewRouterHandlesPostImport(t *testing.T) {
 	var body bytes.Buffer
 	var match mux.RouteMatch
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 	request := httptest.NewRequest("POST", "/api/import", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -55,7 +66,8 @@ func TestNewRouterHandlesGetCellar(t *testing.T) {
 	var match mux.RouteMatch
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 	request := httptest.NewRequest("GET", "/api/cellars", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -67,7 +79,8 @@ func TestNewRouterHandlesPostCellar(t *testing.T) {
 	var match mux.RouteMatch
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 	request := httptest.NewRequest("POST", "/api/cellars", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -79,7 +92,8 @@ func TestNewRouterHandlesGetWines(t *testing.T) {
 	var match mux.RouteMatch
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 	request := httptest.NewRequest("GET", "/api/wines", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -91,7 +105,8 @@ func TestNewRouterHandlesOptionsWines(t *testing.T) {
 	var match mux.RouteMatch
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 	request := httptest.NewRequest("OPTIONS", "/api/wines", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -103,7 +118,8 @@ func TestNewRouterHandlesPostWine(t *testing.T) {
 	var match mux.RouteMatch
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 	request := httptest.NewRequest("POST", "/api/wines", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -115,9 +131,36 @@ func TestNewRouterHandlesPostTest(t *testing.T) {
 	var match mux.RouteMatch
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
-	router := api.NewRouter(cellarHandler, wineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
 	request := httptest.NewRequest("POST", "/api/test", &body)
 
 	assert.True(t, router.Match(request, &match))
 	assert.Equal(t, "PostTest", match.Route.GetName())
+}
+
+func TestNewRouterHandlesGetBottles(t *testing.T) {
+	var body bytes.Buffer
+	var match mux.RouteMatch
+	cellarHandler := new(MockCellarHandler)
+	wineHandler := new(MockWineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	request := httptest.NewRequest("GET", "/api/bottles", &body)
+
+	assert.True(t, router.Match(request, &match))
+	assert.Equal(t, "GetBottles", match.Route.GetName())
+}
+
+func TestNewRouterHandlesPostBottle(t *testing.T) {
+	var body bytes.Buffer
+	var match mux.RouteMatch
+	cellarHandler := new(MockCellarHandler)
+	wineHandler := new(MockWineHandler)
+	bottleHandler := new(MockBottleHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	request := httptest.NewRequest("POST", "/api/bottles", &body)
+
+	assert.True(t, router.Match(request, &match))
+	assert.Equal(t, "PostBottle", match.Route.GetName())
 }

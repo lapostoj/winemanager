@@ -26,7 +26,7 @@ func GetClientURL() string {
 }
 
 // NewRouter creates a router to mach routes and handlers
-func NewRouter(cellarHandler CellarHanderInterface, wineHandler WineHandlerInterface) *mux.Router {
+func NewRouter(cellarHandler CellarHanderInterface, wineHandler WineHandlerInterface, botteHandler BottleHandlerInterface) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	routes := []Route{
@@ -65,6 +65,18 @@ func NewRouter(cellarHandler CellarHanderInterface, wineHandler WineHandlerInter
 			http.MethodPost,
 			"/api/test",
 			wineHandler.PostTest,
+		},
+		Route{
+			"GetBottles",
+			http.MethodGet,
+			"/api/bottles",
+			botteHandler.QueryBottles,
+		},
+		Route{
+			"PostBottle",
+			http.MethodPost,
+			"/api/bottles",
+			botteHandler.PostBottle,
 		},
 		Route{
 			"PostImport",

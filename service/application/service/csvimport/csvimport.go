@@ -11,7 +11,7 @@ import (
 	"github.com/lapostoj/winemanager/service/infrastructure/utils"
 )
 
-// CsvImportInterface defines the interface for a CsvImportInterface
+// CsvImportInterface defines the interface for a CsvImport
 type CsvImportInterface interface {
 	Execute(ctx context.Context, reader *bufio.Reader) ([]wine.Wine, error)
 }

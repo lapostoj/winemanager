@@ -12,7 +12,7 @@ import (
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 )
 
-// WineHandlerInterface defines the interface for a WineHandlerInterface
+// WineHandlerInterface defines the interface for a WineHandler
 type WineHandlerInterface interface {
 	QueryWines(w http.ResponseWriter, r *http.Request)
 	OptionsWines(w http.ResponseWriter, r *http.Request)

@@ -14,7 +14,7 @@ import (
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 )
 
-// CellarHanderInterface defines the interface for a CellarHanderInterface
+// CellarHanderInterface defines the interface for a CellarHander
 type CellarHanderInterface interface {
 	QueryCellars(w http.ResponseWriter, r *http.Request)
 	PostCellar(w http.ResponseWriter, r *http.Request)
