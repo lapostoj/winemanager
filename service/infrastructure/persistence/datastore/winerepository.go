@@ -14,23 +14,6 @@ const wineEntityKind = "Wine"
 type WineRepository struct {
 }
 
-// SaveTestWine adds a test entry in the Wine table.
-func (repository WineRepository) SaveTestWine(ctx context.Context) error {
-	testWine := wine.Wine{
-		Name:        "Test Wine",
-		Designation: "Test Designation",
-		Growth:      "Test Growth",
-		Country:     "FR",
-		Region:      "Bourgogne",
-		Producer:    "Test Producer",
-		Color:       wine.RED,
-		Type:        wine.SEC,
-	}
-
-	_, err := repository.SaveWine(ctx, &testWine)
-	return err
-}
-
 // GetWines returns all the wines in the table.
 func (repository WineRepository) GetWines(ctx context.Context, wines *[]wine.Wine) error {
 	q := datastore.NewQuery(wineEntityKind)

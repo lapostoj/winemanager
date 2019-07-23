@@ -8,7 +8,7 @@ import (
 
 // GetWinesService defines the interface for a GetWinesService
 type GetWinesService interface {
-	Exectue(ctx context.Context) ([]wine.Wine, error)
+	Execute(ctx context.Context) ([]wine.Wine, error)
 }
 
 // GetWines implements a service to get Wines
