@@ -62,6 +62,7 @@ func (handler CellarHandler) QueryCellars(w http.ResponseWriter, r *http.Request
 // PostCellar handles the POST calls to '/api/cellars' and add the cellar in the database
 func (handler CellarHandler) PostCellar(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	var postCellarRequest request.PostCellarRequest
 
 	decoder := json.NewDecoder(r.Body)
@@ -80,6 +81,13 @@ func (handler CellarHandler) PostCellar(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	response, err := json.Marshal(response.NewIDResponse(key))
+	if err != nil {
+		log.Printf("PostCellar - marshal: %q\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(201)
-	w.Write([]byte(key))
+	w.Write(response)
 }

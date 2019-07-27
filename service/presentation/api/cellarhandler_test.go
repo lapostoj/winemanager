@@ -69,6 +69,7 @@ func TestPostCellar(t *testing.T) {
 	createCellar := new(MockCreateCellar)
 	handler := api.CellarHandler{GetCellar: getCellar, CreateCellar: createCellar}
 	expectedCellar := test.ACellar()
+	ID := "id"
 
 	bodyBytes, err := json.Marshal(expectedCellar)
 	if err != nil {
@@ -80,15 +81,17 @@ func TestPostCellar(t *testing.T) {
 
 	createCellar.On("Execute", ctx, mock.MatchedBy(func(cellar *cellar.Cellar) bool {
 		return cellar.Name == expectedCellar.Name && cellar.AccountID == expectedCellar.AccountID
-	})).Return("id", nil)
+	})).Return(ID, nil)
 
 	handler.PostCellar(recorder, request)
 
 	buf := new(bytes.Buffer)
 	result := recorder.Result()
 	buf.ReadFrom(result.Body)
-	cellarResponses := []response.CellarResponse{}
-	json.Unmarshal(buf.Bytes(), &cellarResponses)
+	IDResponse := response.IDResponse{}
+	json.Unmarshal(buf.Bytes(), &IDResponse)
 
 	assert.Equal(t, result.StatusCode, 201)
+	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
+	assert.Equal(t, IDResponse.ID, ID)
 }

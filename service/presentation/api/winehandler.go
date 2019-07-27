@@ -60,6 +60,7 @@ func (handler WineHandler) OptionsWines(w http.ResponseWriter, r *http.Request) 
 // PostWine handles the POST calls to '/api/wines' and add the wine in the database
 func (handler WineHandler) PostWine(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	var postWineRequest request.PostWineRequest
 
 	decoder := json.NewDecoder(r.Body)
@@ -78,13 +79,21 @@ func (handler WineHandler) PostWine(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response, err := json.Marshal(response.NewIDResponse(key))
+	if err != nil {
+		log.Printf("PostWine - marshal: %q\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(201)
-	w.Write([]byte(key))
+	w.Write(response)
 }
 
 // PostTest handles the GET calls to '/api/test'
 func (handler WineHandler) PostTest(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	testWine := wine.Wine{
 		Name:        "Test Wine",
@@ -96,6 +105,7 @@ func (handler WineHandler) PostTest(w http.ResponseWriter, r *http.Request) {
 		Color:       wine.RED,
 		Type:        wine.SEC,
 	}
+
 	key, err := handler.CreateWine.Execute(ctx, &testWine)
 	if err != nil {
 		log.Printf("PostTest - service: %q\n", err)
@@ -103,6 +113,13 @@ func (handler WineHandler) PostTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response, err := json.Marshal(response.NewIDResponse(key))
+	if err != nil {
+		log.Printf("PostTest - marshal: %q\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(201)
-	w.Write([]byte(key))
+	w.Write(response)
 }

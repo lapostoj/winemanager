@@ -62,6 +62,8 @@ func (handler BottleHandler) QueryBottles(w http.ResponseWriter, r *http.Request
 // PostBottle handles the POST calls to '/api/bottles' and add the bottle in the database
 func (handler BottleHandler) PostBottle(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	w.Header().Set("Access-Control-Allow-Origin", GetClientURL())
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	var postBottleRequest request.PostBottleRequest
 
 	decoder := json.NewDecoder(r.Body)
@@ -80,6 +82,13 @@ func (handler BottleHandler) PostBottle(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	response, err := json.Marshal(response.NewIDResponse(key))
+	if err != nil {
+		log.Printf("PostBottle - marshal: %q\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(201)
-	w.Write([]byte(key))
+	w.Write(response)
 }

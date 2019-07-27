@@ -69,6 +69,7 @@ func TestPostBottle(t *testing.T) {
 	createBottle := new(MockCreateBottle)
 	handler := api.BottleHandler{GetBottles: getBottles, CreateBottle: createBottle}
 	expectedBottle := test.ABottle()
+	ID := "id"
 
 	bodyBytes, err := json.Marshal(expectedBottle)
 	if err != nil {
@@ -80,15 +81,18 @@ func TestPostBottle(t *testing.T) {
 
 	createBottle.On("Execute", ctx, mock.MatchedBy(func(bottle *bottle.Bottle) bool {
 		return bottle.Year == expectedBottle.Year && bottle.CellarID == expectedBottle.CellarID && bottle.Quantity == expectedBottle.Quantity
-	})).Return("id", nil)
+	})).Return(ID, nil)
 
 	handler.PostBottle(recorder, request)
 
 	buf := new(bytes.Buffer)
 	result := recorder.Result()
 	buf.ReadFrom(result.Body)
-	bottleResponses := []response.BottleResponse{}
-	json.Unmarshal(buf.Bytes(), &bottleResponses)
+	IDResponse := response.IDResponse{}
+	json.Unmarshal(buf.Bytes(), &IDResponse)
 
 	assert.Equal(t, result.StatusCode, 201)
+	assert.Equal(t, result.Header.Get("Access-Control-Allow-Origin"), api.GetClientURL())
+	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
+	assert.Equal(t, IDResponse.ID, ID)
 }

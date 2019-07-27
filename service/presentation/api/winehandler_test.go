@@ -89,6 +89,7 @@ func TestPostWine(t *testing.T) {
 	createWine := new(MockCreateWine)
 	handler := api.WineHandler{GetWines: getWines, CreateWine: createWine}
 	expectedWine := test.AWine()
+	ID := "id"
 
 	bodyBytes, err := json.Marshal(expectedWine)
 	if err != nil {
@@ -98,17 +99,19 @@ func TestPostWine(t *testing.T) {
 	request := httptest.NewRequest("POST", "/api/wines", body).WithContext(ctx)
 	request.Header.Set("Origin", api.GetClientURL())
 
-	createWine.On("Execute", ctx, &expectedWine).Return("id", nil)
+	createWine.On("Execute", ctx, &expectedWine).Return(ID, nil)
 
 	handler.PostWine(recorder, request)
 
 	buf := new(bytes.Buffer)
 	result := recorder.Result()
 	buf.ReadFrom(result.Body)
-	cellarResponses := []response.CellarResponse{}
-	json.Unmarshal(buf.Bytes(), &cellarResponses)
+	IDResponse := response.IDResponse{}
+	json.Unmarshal(buf.Bytes(), &IDResponse)
 
 	assert.Equal(t, result.StatusCode, 201)
+	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
+	assert.Equal(t, IDResponse.ID, ID)
 }
 
 func TestPostTest(t *testing.T) {
@@ -118,20 +121,23 @@ func TestPostTest(t *testing.T) {
 	createWine := new(MockCreateWine)
 	handler := api.WineHandler{GetWines: getWines, CreateWine: createWine}
 	expectedWine := test.AWine()
+	ID := "id"
 
 	var body bytes.Buffer
 	request := httptest.NewRequest("POST", "/api/test", &body).WithContext(ctx)
 	request.Header.Set("Origin", api.GetClientURL())
 
-	createWine.On("Execute", ctx, &expectedWine).Return("id", nil)
+	createWine.On("Execute", ctx, &expectedWine).Return(ID, nil)
 
 	handler.PostTest(recorder, request)
 
 	buf := new(bytes.Buffer)
 	result := recorder.Result()
 	buf.ReadFrom(result.Body)
-	cellarResponses := []response.CellarResponse{}
-	json.Unmarshal(buf.Bytes(), &cellarResponses)
+	IDResponse := response.IDResponse{}
+	json.Unmarshal(buf.Bytes(), &IDResponse)
 
 	assert.Equal(t, result.StatusCode, 201)
+	assert.Equal(t, result.Header.Get("Content-Type"), "application/json; charset=utf-8")
+	assert.Equal(t, IDResponse.ID, ID)
 }
