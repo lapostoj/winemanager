@@ -45,7 +45,7 @@ func TestQueryCellars(t *testing.T) {
 	request := httptest.NewRequest("GET", "/api/cellars?accountID=123", &body).WithContext(ctx)
 	request.Header.Set("Origin", api.GetClientURL())
 
-	cellars := []cellar.Cellar{test.ACellar()}
+	cellars := []cellar.Cellar{test.ACellarWithID()}
 	getCellar.On("ForAccountID", ctx, 123).Return(cellars, nil)
 
 	handler.QueryCellars(recorder, request)

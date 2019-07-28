@@ -1,9 +1,14 @@
 package cellar
 
-import "time"
+import (
+	"time"
+
+	"cloud.google.com/go/datastore"
+)
 
 // Cellar defines the cellar object for our domain.
 type Cellar struct {
+	Key          *datastore.Key `datastore:"__key__"`
 	Name         string
 	AccountID    int
 	CreationTime time.Time

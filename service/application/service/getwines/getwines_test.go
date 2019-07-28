@@ -26,6 +26,11 @@ func (mock *MockWineRepository) GetWines(ctx context.Context, wines *[]wine.Wine
 	return args.Error(0)
 }
 
+func (mock *MockWineRepository) GetWineByID(ctx context.Context, ID int64, wine *wine.Wine) error {
+	args := mock.Called(ctx, ID, wine)
+	return args.Error(0)
+}
+
 func TestGetWines(t *testing.T) {
 	ctx := context.Background()
 	wineRepository := new(MockWineRepository)

@@ -44,7 +44,7 @@ func TestGetWines(t *testing.T) {
 	request := httptest.NewRequest("GET", "/api/wines", &body).WithContext(ctx)
 	request.Header.Set("Origin", api.GetClientURL())
 
-	wines := []wine.Wine{test.AWine()}
+	wines := []wine.Wine{test.AWineWithID()}
 	getWines.On("Execute", ctx).Return(wines, nil)
 
 	handler.QueryWines(recorder, request)

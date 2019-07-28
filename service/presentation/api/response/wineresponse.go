@@ -4,6 +4,7 @@ import "github.com/lapostoj/winemanager/service/domain/model/wine"
 
 // WineResponse defines the object used when sending a wine.
 type WineResponse struct {
+	ID          int64  `json:"ID"`
 	Name        string `json:"name"`
 	Designation string `json:"designation"`
 	Growth      string `json:"growth"`
@@ -17,6 +18,7 @@ type WineResponse struct {
 // NewWineResponse transforms a Wine in WineReponse
 func NewWineResponse(wine wine.Wine) *WineResponse {
 	return &WineResponse{
+		ID:          wine.Key.ID,
 		Name:        wine.Name,
 		Designation: wine.Designation,
 		Growth:      wine.Growth,

@@ -32,7 +32,7 @@ func main() {
 	wineHandler := api.WineHandler{GetWines: getWinesService, CreateWine: createWineService}
 
 	bottleRepository := persistence.BottleRepository{}
-	getBottleService := getbottles.GetBottles{BottleRepository: bottleRepository}
+	getBottleService := getbottles.GetBottles{BottleRepository: bottleRepository, WineRespository: wineRepository}
 	createBottleService := createbottle.CreateBottle{BottleRepository: bottleRepository}
 	bottleHandler := api.BottleHandler{GetBottles: getBottleService, CreateBottle: createBottleService}
 

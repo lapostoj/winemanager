@@ -17,7 +17,7 @@ func ABottle() bottle.Bottle {
 		Size:            bottle.BOTTLE,
 		Quantity:        3,
 		CellarID:        123,
-		Wine:            AWine(),
+		WineID:          111,
 		History:         []bottle.Variation{aVariation()},
 		StorageLocation: storageLocation,
 	}

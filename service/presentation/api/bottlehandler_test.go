@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/lapostoj/winemanager/service/domain/model/bottle"
+	"github.com/lapostoj/winemanager/service/domain/model/wine"
 	"github.com/lapostoj/winemanager/service/presentation/api"
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 	"github.com/lapostoj/winemanager/service/test"
@@ -24,9 +25,9 @@ type MockCreateBottle struct {
 	mock.Mock
 }
 
-func (mock MockGetBottles) ForCellarID(ctx context.Context, cellarID int) ([]bottle.Bottle, error) {
+func (mock MockGetBottles) ForCellarID(ctx context.Context, cellarID int) ([]response.BottleResponse, error) {
 	args := mock.Called(ctx, cellarID)
-	return args.Get(0).([]bottle.Bottle), args.Error(1)
+	return args.Get(0).([]response.BottleResponse), args.Error(1)
 }
 
 func (mock MockCreateBottle) Execute(ctx context.Context, bottle *bottle.Bottle) (string, error) {
@@ -45,8 +46,8 @@ func TestQueryBottles(t *testing.T) {
 	request := httptest.NewRequest("GET", "/api/bottles?cellarID=123", &body).WithContext(ctx)
 	request.Header.Set("Origin", api.GetClientURL())
 
-	bottles := []bottle.Bottle{test.ABottle()}
-	getBottles.On("ForCellarID", ctx, 123).Return(bottles, nil)
+	expectedBottleResponses := response.NewBottleResponses([]bottle.Bottle{test.ABottle()}, []wine.Wine{test.AWineWithID()})
+	getBottles.On("ForCellarID", ctx, 123).Return(expectedBottleResponses, nil)
 
 	handler.QueryBottles(recorder, request)
 

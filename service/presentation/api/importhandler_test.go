@@ -38,7 +38,7 @@ func TestPostImport(t *testing.T) {
 	handler := api.ImportHandler{CsvImport: csvImport}
 	recorder := httptest.NewRecorder()
 	csvFile := openCsvTestFile()
-	csvImport.On("Execute", ctx, mock.Anything).Return([]wine.Wine{test.AWine(), test.AWine()}, nil)
+	csvImport.On("Execute", ctx, mock.Anything).Return([]wine.Wine{test.AWineWithID(), test.AWineWithID()}, nil)
 
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)

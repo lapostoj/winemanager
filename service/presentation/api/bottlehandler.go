@@ -42,14 +42,14 @@ func (handler BottleHandler) QueryBottles(w http.ResponseWriter, r *http.Request
 
 	cellarID := utils.StringToInt(values.Get("cellarID"))
 
-	bottles, err := handler.GetBottles.ForCellarID(ctx, cellarID)
+	bottleResponses, err := handler.GetBottles.ForCellarID(ctx, cellarID)
 	if err != nil {
 		log.Printf("QueryBottles - service: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	response, err := json.Marshal(response.NewBottleResponses(bottles))
+	response, err := json.Marshal(bottleResponses)
 	if err != nil {
 		log.Printf("QueryBottles - marshal: %q\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

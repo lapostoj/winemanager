@@ -22,6 +22,14 @@ func (repository WineRepository) GetWines(ctx context.Context, wines *[]wine.Win
 	return err
 }
 
+// GetWineByID returns the wine for the provided ID.
+func (repository WineRepository) GetWineByID(ctx context.Context, ID int64, wine *wine.Wine) error {
+	key := datastore.IDKey("Wine", ID, nil)
+
+	err := DatastoreClient(ctx).Get(ctx, key, wine)
+	return err
+}
+
 // SaveWine save the wine in the database.
 func (repository WineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
 	key, err := DatastoreClient(ctx).Put(ctx, datastore.IncompleteKey(wineEntityKind, nil), wine)

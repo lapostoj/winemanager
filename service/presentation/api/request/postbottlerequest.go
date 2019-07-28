@@ -11,7 +11,8 @@ type PostBottleRequest struct {
 	Year     int         `json:"year"`
 	Size     bottle.Size `json:"size"`
 	Quantity int         `json:"quantity"`
-	CellarID int         `json:"cellarID"`
+	CellarID int64       `json:"cellarID"`
+	WineID   int64       `json:"wineID"`
 	Position string      `json:"position"`
 }
 
@@ -28,6 +29,7 @@ func (request PostBottleRequest) NewBottle() *bottle.Bottle {
 		Size:     request.Size,
 		Quantity: request.Quantity,
 		CellarID: request.CellarID,
+		WineID:   request.WineID,
 		History:  []bottle.Variation{variation},
 		StorageLocation: bottle.StorageLocation{
 			Position: request.Position,
