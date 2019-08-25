@@ -18,4 +18,4 @@ jobs:
     - name: Deploy
       uses: actions/gcloud/cli@master
       with:
-        args: app deploy --quiet --project cave-inventaire
+        args: app deploy --quiet --project=cave-inventaire
