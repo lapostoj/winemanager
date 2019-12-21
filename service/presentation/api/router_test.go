@@ -12,6 +12,13 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+type MockImportHandler struct {
+	mock.Mock
+}
+
+func (mock MockImportHandler) PostImport(w http.ResponseWriter, r *http.Request) {
+}
+
 type MockCellarHandler struct {
 	mock.Mock
 }
@@ -54,7 +61,8 @@ func TestNewRouterHandlesPostImport(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("POST", "/api/import", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -67,7 +75,8 @@ func TestNewRouterHandlesGetCellar(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("GET", "/api/cellars", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -80,7 +89,8 @@ func TestNewRouterHandlesPostCellar(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("POST", "/api/cellars", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -93,7 +103,8 @@ func TestNewRouterHandlesGetWines(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("GET", "/api/wines", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -106,7 +117,8 @@ func TestNewRouterHandlesOptionsWines(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("OPTIONS", "/api/wines", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -119,7 +131,8 @@ func TestNewRouterHandlesPostWine(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("POST", "/api/wines", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -132,7 +145,8 @@ func TestNewRouterHandlesPostTest(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("POST", "/api/test", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -145,7 +159,8 @@ func TestNewRouterHandlesGetBottles(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("GET", "/api/bottles", &body)
 
 	assert.True(t, router.Match(request, &match))
@@ -158,7 +173,8 @@ func TestNewRouterHandlesPostBottle(t *testing.T) {
 	cellarHandler := new(MockCellarHandler)
 	wineHandler := new(MockWineHandler)
 	bottleHandler := new(MockBottleHandler)
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	importHandler := new(MockImportHandler)
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 	request := httptest.NewRequest("POST", "/api/bottles", &body)
 
 	assert.True(t, router.Match(request, &match))

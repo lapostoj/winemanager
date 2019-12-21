@@ -5,8 +5,11 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strconv"
 	"strings"
 
+	"github.com/lapostoj/winemanager/service/domain/model/bottle"
+	"github.com/lapostoj/winemanager/service/domain/model/cellar"
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
 	"github.com/lapostoj/winemanager/service/infrastructure/utils"
 )
@@ -18,7 +21,9 @@ type CsvImportInterface interface {
 
 // CsvImport implements a service to parse a CSV file and import in in the db.
 type CsvImport struct {
-	WineRepository wine.Repository
+	CellarRepository cellar.Repository
+	WineRepository   wine.Repository
+	BottleRepository bottle.Repository
 }
 
 // Execute executes the service.
@@ -58,14 +63,26 @@ func validateData(header string, referenceHeaders []string) bool {
 
 func (service CsvImport) persistDataLine(ctx context.Context, line string) *wine.Wine {
 	data := parseLine(line)
+	cellar := buildHardcodedCellar()
+	stringCellarID, _ := service.CellarRepository.SaveCellar(ctx, cellar)
+	cellarID, _ := strconv.ParseInt(stringCellarID, 10, 64)
+
 	wine := dataToWine(data)
-	service.WineRepository.SaveWine(ctx, wine)
+	stringWineID, _ := service.WineRepository.SaveWine(ctx, wine)
+	wineID, _ := strconv.ParseInt(stringWineID, 10, 64)
+
+	bottle := dataToBottle(data, cellarID, wineID)
+	service.BottleRepository.SaveBottle(ctx, bottle)
 	return wine
 }
 
 func parseLine(line string) []string {
 	cleanedLine := strings.TrimSuffix(line, ",")
 	return strings.Split(cleanedLine, ",")
+}
+
+func buildHardcodedCellar() *cellar.Cellar {
+	return cellar.NewCellar("Moiré", 1)
 }
 
 func dataToWine(data []string) *wine.Wine {
@@ -78,12 +95,16 @@ func dataToWine(data []string) *wine.Wine {
 		Color:       wine.StringToColor(data[5]),
 		Type:        wine.StringToType(data[6]),
 		Producer:    data[8],
-		// Year:        utils.StringToInt(data[3]),
-		// Quantity:    utils.StringToInt(data[7]),
-		// Size:        wine.IntToSize(StringToInt(data[10])),
-		// StorageLocation: wine.StorageLocation{
-		// 	Cellar: "Moiré",
-		// },
+	}
+}
+
+func dataToBottle(data []string, cellarID int64, wineID int64) *bottle.Bottle {
+	return &bottle.Bottle{
+		Year:     utils.StringToInt(data[3]),
+		Size:     bottle.IntToSize(utils.StringToInt(data[10])),
+		Quantity: utils.StringToInt(data[7]),
+		CellarID: cellarID,
+		WineID:   wineID,
 	}
 }
 

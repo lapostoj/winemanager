@@ -12,7 +12,12 @@ import (
 	"github.com/lapostoj/winemanager/service/presentation/api/response"
 )
 
-// ImportHandler defines the interface for a ImportHandler
+// ImportHandlerInterface defines the interface for a ImportHandler
+type ImportHandlerInterface interface {
+	PostImport(w http.ResponseWriter, r *http.Request)
+}
+
+// ImportHandler structure
 type ImportHandler struct {
 	CsvImport csvimport.CsvImportInterface
 }

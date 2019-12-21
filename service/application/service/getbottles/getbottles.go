@@ -16,7 +16,7 @@ type GetBottlesService interface {
 // GetBottles implements a service to get Bottles
 type GetBottles struct {
 	BottleRepository bottle.Repository
-	WineRespository  wine.Repository
+	WineRepository   wine.Repository
 }
 
 // ForCellarID returns the bottles with the provided cellarID.
@@ -26,7 +26,7 @@ func (service GetBottles) ForCellarID(ctx context.Context, cellarID int) ([]resp
 	var wines []wine.Wine
 	for _, bottle := range bottles {
 		var wine wine.Wine
-		service.WineRespository.GetWineByID(ctx, bottle.WineID, &wine)
+		service.WineRepository.GetWineByID(ctx, bottle.WineID, &wine)
 		wines = append(wines, wine)
 	}
 

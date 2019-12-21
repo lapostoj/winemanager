@@ -20,7 +20,7 @@ type CellarHanderInterface interface {
 	PostCellar(w http.ResponseWriter, r *http.Request)
 }
 
-// CellarHandler implements handling of api calls for cellars
+// CellarHandler structure
 type CellarHandler struct {
 	GetCellar    getcellar.GetCellarService
 	CreateCellar createcellar.CreateCellarService

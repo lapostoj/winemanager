@@ -20,7 +20,7 @@ type WineHandlerInterface interface {
 	PostTest(w http.ResponseWriter, r *http.Request)
 }
 
-// WineHandler defines the interface for a WineHandler
+// WineHandler structure
 type WineHandler struct {
 	// WineRepository wine.Repository
 	GetWines   getwines.GetWinesService

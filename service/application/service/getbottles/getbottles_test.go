@@ -55,7 +55,7 @@ func TestGetBottles(t *testing.T) {
 	cellarId := 123
 	wineId := int64(111)
 	var bottleResponses []response.BottleResponse
-	getBottleService := getbottles.GetBottles{BottleRepository: bottleRepository, WineRespository: wineRepository}
+	getBottleService := getbottles.GetBottles{BottleRepository: bottleRepository, WineRepository: wineRepository}
 	bottleRepository.On("FindBottlesForCellarID", ctx, mock.AnythingOfType("*[]bottle.Bottle"), cellarId).Return(nil)
 	wineRepository.On("GetWineByID", ctx, wineId, mock.AnythingOfType("*wine.Wine")).Return(nil)
 
