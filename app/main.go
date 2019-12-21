@@ -9,6 +9,7 @@ import (
 	"github.com/lapostoj/winemanager/service/application/service/createbottle"
 	"github.com/lapostoj/winemanager/service/application/service/createcellar"
 	"github.com/lapostoj/winemanager/service/application/service/createwine"
+	"github.com/lapostoj/winemanager/service/application/service/csvimport"
 	"github.com/lapostoj/winemanager/service/application/service/getbottles"
 	"github.com/lapostoj/winemanager/service/application/service/getcellar"
 	"github.com/lapostoj/winemanager/service/application/service/getwines"
@@ -21,6 +22,7 @@ const defaultPort = "8080"
 // main is called before the application starts.
 func main() {
 	frontendFolder := os.Getenv("FRONTEND_FOLDER")
+
 	cellarRepository := persistence.CellarRepository{}
 	getCellarService := getcellar.GetCellar{CellarRepository: cellarRepository}
 	createCellarService := createcellar.CreateCellar{CellarRepository: cellarRepository}
@@ -32,11 +34,14 @@ func main() {
 	wineHandler := api.WineHandler{GetWines: getWinesService, CreateWine: createWineService}
 
 	bottleRepository := persistence.BottleRepository{}
-	getBottleService := getbottles.GetBottles{BottleRepository: bottleRepository, WineRespository: wineRepository}
+	getBottleService := getbottles.GetBottles{BottleRepository: bottleRepository, WineRepository: wineRepository}
 	createBottleService := createbottle.CreateBottle{BottleRepository: bottleRepository}
 	bottleHandler := api.BottleHandler{GetBottles: getBottleService, CreateBottle: createBottleService}
 
-	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler)
+	csvImportService := csvimport.CsvImport{CellarRepository: cellarRepository, WineRepository: wineRepository, BottleRepository: bottleRepository}
+	importHandler := api.ImportHandler{CsvImport: csvImportService}
+
+	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(frontendFolder)))
 	http.Handle("/api/", router)

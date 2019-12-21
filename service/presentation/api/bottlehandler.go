@@ -20,7 +20,7 @@ type BottleHandlerInterface interface {
 	PostBottle(w http.ResponseWriter, r *http.Request)
 }
 
-// BottleHandler implements handling of api calls for bottles
+// BottleHandler structure
 type BottleHandler struct {
 	GetBottles   getbottles.GetBottlesService
 	CreateBottle createbottle.CreateBottleService

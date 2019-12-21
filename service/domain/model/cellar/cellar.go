@@ -15,8 +15,10 @@ type Cellar struct {
 }
 
 // NewCellar creates a Cellar struct with default values.
-func NewCellar() *Cellar {
+func NewCellar(name string, accountID int) *Cellar {
 	return &Cellar{
+		Name:         name,
+		AccountID:    accountID,
 		CreationTime: time.Now().UTC(),
 	}
 }

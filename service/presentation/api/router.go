@@ -5,8 +5,6 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/lapostoj/winemanager/service/application/service/csvimport"
-	persistence "github.com/lapostoj/winemanager/service/infrastructure/persistence/datastore"
 )
 
 // Route structure for API.
@@ -26,7 +24,12 @@ func GetClientURL() string {
 }
 
 // NewRouter creates a router to mach routes and handlers
-func NewRouter(cellarHandler CellarHanderInterface, wineHandler WineHandlerInterface, botteHandler BottleHandlerInterface) *mux.Router {
+func NewRouter(
+	cellarHandler CellarHanderInterface,
+	wineHandler WineHandlerInterface,
+	bottleHandler BottleHandlerInterface,
+	importHandler ImportHandlerInterface,
+) *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	routes := []Route{
@@ -70,19 +73,19 @@ func NewRouter(cellarHandler CellarHanderInterface, wineHandler WineHandlerInter
 			"GetBottles",
 			http.MethodGet,
 			"/api/bottles",
-			botteHandler.QueryBottles,
+			bottleHandler.QueryBottles,
 		},
 		Route{
 			"PostBottle",
 			http.MethodPost,
 			"/api/bottles",
-			botteHandler.PostBottle,
+			bottleHandler.PostBottle,
 		},
 		Route{
 			"PostImport",
 			http.MethodPost,
 			"/api/import",
-			ImportHandler{CsvImport: csvimport.CsvImport{WineRepository: persistence.WineRepository{}}}.PostImport,
+			importHandler.PostImport,
 		},
 	}
 
