@@ -23,6 +23,26 @@ The project is made with an upload on Google appengine in mind.
 FRONTEND_FOLDER=./app/frontend/ go run app/main.go
 ```
 
+### Manage dependencies
+
+See upgrades to be done
+
+```bash
+go list -u -m all
+```
+
+Update all direct and indirect dependencies
+
+```bash
+go get -u ./...
+```
+
+Prune dependencies from `go.mod`
+
+```bash
+go mod tidy
+```
+
 ### Run the tests
 
 ```bash
