@@ -38,7 +38,7 @@ func main() {
 	createBottleService := createbottle.CreateBottle{BottleRepository: bottleRepository}
 	bottleHandler := api.BottleHandler{GetBottles: getBottleService, CreateBottle: createBottleService}
 
-	csvImportService := csvimport.CsvImport{CellarRepository: cellarRepository, WineRepository: wineRepository, BottleRepository: bottleRepository}
+	csvImportService := csvimport.CsvImport{CreateCellar: createCellarService, CreateWine: createWineService, CreateBottle: createBottleService}
 	importHandler := api.ImportHandler{CsvImport: csvImportService}
 
 	router := api.NewRouter(cellarHandler, wineHandler, bottleHandler, importHandler)

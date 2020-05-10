@@ -8,6 +8,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/lapostoj/winemanager/service/application/service/createbottle"
+	"github.com/lapostoj/winemanager/service/application/service/createcellar"
+	"github.com/lapostoj/winemanager/service/application/service/createwine"
 	"github.com/lapostoj/winemanager/service/domain/model/bottle"
 	"github.com/lapostoj/winemanager/service/domain/model/cellar"
 	"github.com/lapostoj/winemanager/service/domain/model/wine"
@@ -21,9 +24,9 @@ type CsvImportInterface interface {
 
 // CsvImport implements a service to parse a CSV file and import in in the db.
 type CsvImport struct {
-	CellarRepository cellar.Repository
-	WineRepository   wine.Repository
-	BottleRepository bottle.Repository
+	CreateCellar createcellar.CreateCellarService
+	CreateBottle createbottle.CreateBottleService
+	CreateWine   createwine.CreateWineService
 }
 
 // Execute executes the service.
@@ -41,14 +44,21 @@ func (service CsvImport) readLineByLine(ctx context.Context, reader *bufio.Reade
 	scanner.Split(bufio.ScanLines)
 	linesRead := 0
 	var wines []wine.Wine
+	var cellarID int64
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		if linesRead == 0 {
-			if !validateData(line, referenceHeaders) {
+			if !validateHeaders(line, referenceHeaders) {
 				return wines, errors.New("Invalid data")
 			}
+			cellar := buildHardcodedCellar()
+			stringCellarID, _ := service.CreateCellar.Execute(ctx, cellar)
+			log.Printf("StringCellarId: %s", stringCellarID)
+			cellarID, _ = strconv.ParseInt(stringCellarID, 10, 64)
+			log.Printf("CellarID: %q", cellarID)
 		} else {
-			wine := service.persistDataLine(ctx, line)
+			wine := service.persistDataLine(ctx, line, cellarID)
 			wines = append(wines, *wine)
 		}
 		linesRead++
@@ -56,24 +66,22 @@ func (service CsvImport) readLineByLine(ctx context.Context, reader *bufio.Reade
 	return wines, nil
 }
 
-func validateData(header string, referenceHeaders []string) bool {
-	headers := parseLine(header)
-	return utils.EqualsStringSlices(referenceHeaders, headers)
-}
-
-func (service CsvImport) persistDataLine(ctx context.Context, line string) *wine.Wine {
+func (service CsvImport) persistDataLine(ctx context.Context, line string, cellarID int64) *wine.Wine {
 	data := parseLine(line)
-	cellar := buildHardcodedCellar()
-	stringCellarID, _ := service.CellarRepository.SaveCellar(ctx, cellar)
-	cellarID, _ := strconv.ParseInt(stringCellarID, 10, 64)
 
 	wine := dataToWine(data)
-	stringWineID, _ := service.WineRepository.SaveWine(ctx, wine)
+	stringWineID, _ := service.CreateWine.Execute(ctx, wine)
 	wineID, _ := strconv.ParseInt(stringWineID, 10, 64)
+	log.Printf("wineID: %q", wineID)
 
 	bottle := dataToBottle(data, cellarID, wineID)
-	service.BottleRepository.SaveBottle(ctx, bottle)
+	service.CreateBottle.Execute(ctx, bottle)
 	return wine
+}
+
+func validateHeaders(line string, referenceHeaders []string) bool {
+	headers := parseLine(line)
+	return utils.EqualsStringSlices(referenceHeaders, headers)
 }
 
 func parseLine(line string) []string {

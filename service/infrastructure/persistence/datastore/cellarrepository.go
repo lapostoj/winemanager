@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"log"
 
 	"cloud.google.com/go/datastore"
 	"github.com/lapostoj/winemanager/service/domain/model/cellar"
@@ -20,6 +21,7 @@ func (repository CellarRepository) SaveCellar(ctx context.Context, cellar *cella
 	if err != nil {
 		return "", err
 	}
+	log.Printf("Cellar Key %s", key.String())
 	return key.Encode(), nil
 }
 
