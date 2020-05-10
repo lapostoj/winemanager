@@ -29,9 +29,9 @@ func (mock MockGetCellar) ForAccountID(ctx context.Context, accountID int) ([]ce
 	return args.Get(0).([]cellar.Cellar), args.Error(1)
 }
 
-func (mock MockCreateCellar) Execute(ctx context.Context, cellar *cellar.Cellar) (string, error) {
+func (mock MockCreateCellar) Execute(ctx context.Context, cellar *cellar.Cellar) (int64, error) {
 	args := mock.Called(ctx, cellar)
-	return args.Get(0).(string), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func TestQueryCellars(t *testing.T) {
@@ -69,7 +69,7 @@ func TestPostCellar(t *testing.T) {
 	createCellar := new(MockCreateCellar)
 	handler := api.CellarHandler{GetCellar: getCellar, CreateCellar: createCellar}
 	expectedCellar := test.ACellar()
-	ID := "id"
+	ID := int64(1234)
 
 	bodyBytes, err := json.Marshal(expectedCellar)
 	if err != nil {

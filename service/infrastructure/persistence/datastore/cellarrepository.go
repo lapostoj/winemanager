@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"context"
-	"log"
 
 	"cloud.google.com/go/datastore"
 	"github.com/lapostoj/winemanager/service/domain/model/cellar"
@@ -16,13 +15,12 @@ type CellarRepository struct {
 }
 
 // SaveCellar saves the cellar in the database
-func (repository CellarRepository) SaveCellar(ctx context.Context, cellar *cellar.Cellar) (string, error) {
+func (repository CellarRepository) SaveCellar(ctx context.Context, cellar *cellar.Cellar) (int64, error) {
 	key, err := DatastoreClient(ctx).Put(ctx, datastore.IncompleteKey(cellarEntityKind, nil), cellar)
 	if err != nil {
-		return "", err
+		return -1, err
 	}
-	log.Printf("Cellar Key %s", key.String())
-	return key.Encode(), nil
+	return key.ID, nil
 }
 
 // FindCellarsForAccountID returns the cellars in the table with the accountID provided

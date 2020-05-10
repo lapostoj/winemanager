@@ -15,9 +15,9 @@ type MockWineRepository struct {
 	mock.Mock
 }
 
-func (mock *MockWineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
+func (mock *MockWineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (int64, error) {
 	args := mock.Called(ctx, wine)
-	return args.String(0), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (mock *MockWineRepository) GetWines(ctx context.Context, wines *[]wine.Wine) error {
@@ -34,7 +34,7 @@ func TestCreateCellar(t *testing.T) {
 	ctx := context.Background()
 	wineRepository := new(MockWineRepository)
 	wine := test.AWine()
-	expectedId := "123"
+	expectedId := int64(123)
 	createWineService := createwine.CreateWine{WineRepository: wineRepository}
 	wineRepository.On("SaveWine", ctx, &wine).Return(expectedId, nil)
 

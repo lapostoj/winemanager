@@ -30,9 +30,9 @@ func (mock MockGetBottles) ForCellarID(ctx context.Context, cellarID int) ([]res
 	return args.Get(0).([]response.BottleResponse), args.Error(1)
 }
 
-func (mock MockCreateBottle) Execute(ctx context.Context, bottle *bottle.Bottle) (string, error) {
+func (mock MockCreateBottle) Execute(ctx context.Context, bottle *bottle.Bottle) (int64, error) {
 	args := mock.Called(ctx, bottle)
-	return args.Get(0).(string), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func TestQueryBottles(t *testing.T) {
@@ -70,7 +70,7 @@ func TestPostBottle(t *testing.T) {
 	createBottle := new(MockCreateBottle)
 	handler := api.BottleHandler{GetBottles: getBottles, CreateBottle: createBottle}
 	expectedBottle := test.ABottle()
-	ID := "id"
+	ID := int64(1234)
 
 	bodyBytes, err := json.Marshal(expectedBottle)
 	if err != nil {

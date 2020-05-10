@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewIDResponse(t *testing.T) {
-	id := "id"
+	id := int64(12345)
 
 	IDResponse := response.NewIDResponse(id)
 

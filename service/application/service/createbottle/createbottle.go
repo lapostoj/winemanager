@@ -8,7 +8,7 @@ import (
 
 // CreateBottleService defines the interface for a CreateBottleService
 type CreateBottleService interface {
-	Execute(ctx context.Context, bottle *bottle.Bottle) (string, error)
+	Execute(ctx context.Context, bottle *bottle.Bottle) (int64, error)
 }
 
 // CreateBottle implements a service to get Bottles
@@ -17,6 +17,6 @@ type CreateBottle struct {
 }
 
 // Execute persists the passed bottle and return its id.
-func (service CreateBottle) Execute(ctx context.Context, bottle *bottle.Bottle) (string, error) {
+func (service CreateBottle) Execute(ctx context.Context, bottle *bottle.Bottle) (int64, error) {
 	return service.BottleRepository.SaveBottle(ctx, bottle)
 }

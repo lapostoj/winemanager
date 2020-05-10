@@ -15,9 +15,9 @@ type MockCellarRepository struct {
 	mock.Mock
 }
 
-func (mock *MockCellarRepository) SaveCellar(ctx context.Context, cellar *cellar.Cellar) (string, error) {
+func (mock *MockCellarRepository) SaveCellar(ctx context.Context, cellar *cellar.Cellar) (int64, error) {
 	args := mock.Called(ctx, cellar)
-	return args.String(0), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (mock *MockCellarRepository) FindCellarsForAccountID(ctx context.Context, cellars *[]cellar.Cellar, accountId int) error {
@@ -29,7 +29,7 @@ func TestCreateCellar(t *testing.T) {
 	ctx := context.Background()
 	cellarRepository := new(MockCellarRepository)
 	cellar := test.ACellar()
-	expectedId := "123"
+	expectedId := int64(123)
 	createCellarService := createcellar.CreateCellar{CellarRepository: cellarRepository}
 	cellarRepository.On("SaveCellar", ctx, &cellar).Return(expectedId, nil)
 
