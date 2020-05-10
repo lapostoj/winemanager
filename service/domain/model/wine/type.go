@@ -1,6 +1,9 @@
 package wine
 
-import "errors"
+import (
+	"errors"
+	"log"
+)
 
 // Type defines the possible types for a wine.
 type Type string
@@ -37,6 +40,7 @@ func (t Type) String() string {
 	case AUTRE:
 		return "AUTRE"
 	}
+
 	panic(errors.New("Unknown type"))
 }
 
@@ -58,8 +62,8 @@ func StringToType(s string) Type {
 		return MOELLEUX
 	case "Tranquille":
 		return TRANQUILLE
-	case "Autre":
-		return AUTRE
 	}
-	panic(errors.New("Unknwown type: " + s))
+
+	log.Printf("Unknown wine type string %s. Defaulting to AUTRE", s)
+	return AUTRE
 }
