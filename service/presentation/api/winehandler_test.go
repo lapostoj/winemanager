@@ -28,9 +28,9 @@ func (mock MockGetWines) Execute(ctx context.Context) ([]wine.Wine, error) {
 	return args.Get(0).([]wine.Wine), args.Error(1)
 }
 
-func (mock MockCreateWine) Execute(ctx context.Context, wine *wine.Wine) (string, error) {
+func (mock MockCreateWine) Execute(ctx context.Context, wine *wine.Wine) (int64, error) {
 	args := mock.Called(ctx, wine)
-	return args.Get(0).(string), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func TestGetWines(t *testing.T) {
@@ -89,7 +89,7 @@ func TestPostWine(t *testing.T) {
 	createWine := new(MockCreateWine)
 	handler := api.WineHandler{GetWines: getWines, CreateWine: createWine}
 	expectedWine := test.AWine()
-	ID := "id"
+	ID := int64(1234)
 
 	bodyBytes, err := json.Marshal(expectedWine)
 	if err != nil {
@@ -121,7 +121,7 @@ func TestPostTest(t *testing.T) {
 	createWine := new(MockCreateWine)
 	handler := api.WineHandler{GetWines: getWines, CreateWine: createWine}
 	expectedWine := test.AWine()
-	ID := "id"
+	ID := int64(1234)
 
 	var body bytes.Buffer
 	request := httptest.NewRequest("POST", "/api/test", &body).WithContext(ctx)

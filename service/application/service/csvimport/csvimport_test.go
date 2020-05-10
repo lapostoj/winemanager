@@ -19,27 +19,27 @@ type MockCreateCellar struct {
 	mock.Mock
 }
 
-func (mock *MockCreateCellar) Execute(ctx context.Context, cellar *cellar.Cellar) (string, error) {
+func (mock *MockCreateCellar) Execute(ctx context.Context, cellar *cellar.Cellar) (int64, error) {
 	args := mock.Called(ctx, cellar)
-	return args.String(0), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 type MockCreateWine struct {
 	mock.Mock
 }
 
-func (mock *MockCreateWine) Execute(ctx context.Context, wine *wine.Wine) (string, error) {
+func (mock *MockCreateWine) Execute(ctx context.Context, wine *wine.Wine) (int64, error) {
 	args := mock.Called(ctx, wine)
-	return args.String(0), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 type MockCreateBottle struct {
 	mock.Mock
 }
 
-func (mock *MockCreateBottle) Execute(ctx context.Context, bottle *bottle.Bottle) (string, error) {
+func (mock *MockCreateBottle) Execute(ctx context.Context, bottle *bottle.Bottle) (int64, error) {
 	args := mock.Called(ctx, bottle)
-	return args.String(0), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func TestExecute(t *testing.T) {
@@ -50,9 +50,9 @@ func TestExecute(t *testing.T) {
 	csvImportService := csvimport.CsvImport{CreateCellar: createCellar, CreateWine: createWine, CreateBottle: createBottle}
 	file := test.ACsvImportFile()
 	reader := bufio.NewReader(strings.NewReader(file))
-	createCellar.On("Execute", ctx, mock.Anything).Return("id", nil)
-	createWine.On("Execute", ctx, mock.Anything).Return("id", nil)
-	createBottle.On("Execute", ctx, mock.Anything).Return("id", nil)
+	createCellar.On("Execute", ctx, mock.Anything).Return(int64(111), nil)
+	createWine.On("Execute", ctx, mock.Anything).Return(int64(122), nil)
+	createBottle.On("Execute", ctx, mock.Anything).Return(int64(133), nil)
 
 	wines, err := csvImportService.Execute(ctx, reader)
 

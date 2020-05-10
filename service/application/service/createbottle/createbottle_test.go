@@ -15,9 +15,9 @@ type MockBottleRepository struct {
 	mock.Mock
 }
 
-func (mock *MockBottleRepository) SaveBottle(ctx context.Context, bottle *bottle.Bottle) (string, error) {
+func (mock *MockBottleRepository) SaveBottle(ctx context.Context, bottle *bottle.Bottle) (int64, error) {
 	args := mock.Called(ctx, bottle)
-	return args.String(0), args.Error(1)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (mock *MockBottleRepository) FindBottlesForCellarID(ctx context.Context, bottles *[]bottle.Bottle, cellarId int) error {
@@ -29,7 +29,7 @@ func TestCreateBottle(t *testing.T) {
 	ctx := context.Background()
 	bottleRepository := new(MockBottleRepository)
 	bottle := test.ABottle()
-	expectedId := "123"
+	expectedId := int64(123)
 	createBottleService := createbottle.CreateBottle{BottleRepository: bottleRepository}
 	bottleRepository.On("SaveBottle", ctx, &bottle).Return(expectedId, nil)
 

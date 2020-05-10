@@ -5,7 +5,6 @@ import (
 	"context"
 	"errors"
 	"log"
-	"strconv"
 	"strings"
 
 	"github.com/lapostoj/winemanager/service/application/service/createbottle"
@@ -53,10 +52,7 @@ func (service CsvImport) readLineByLine(ctx context.Context, reader *bufio.Reade
 				return wines, errors.New("Invalid data")
 			}
 			cellar := buildHardcodedCellar()
-			stringCellarID, _ := service.CreateCellar.Execute(ctx, cellar)
-			log.Printf("StringCellarId: %s", stringCellarID)
-			cellarID, _ = strconv.ParseInt(stringCellarID, 10, 64)
-			log.Printf("CellarID: %q", cellarID)
+			cellarID, _ = service.CreateCellar.Execute(ctx, cellar)
 		} else {
 			wine := service.persistDataLine(ctx, line, cellarID)
 			wines = append(wines, *wine)
@@ -70,9 +66,7 @@ func (service CsvImport) persistDataLine(ctx context.Context, line string, cella
 	data := parseLine(line)
 
 	wine := dataToWine(data)
-	stringWineID, _ := service.CreateWine.Execute(ctx, wine)
-	wineID, _ := strconv.ParseInt(stringWineID, 10, 64)
-	log.Printf("wineID: %q", wineID)
+	wineID, _ := service.CreateWine.Execute(ctx, wine)
 
 	bottle := dataToBottle(data, cellarID, wineID)
 	service.CreateBottle.Execute(ctx, bottle)

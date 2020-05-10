@@ -20,10 +20,10 @@ func TestSaveWine(t *testing.T) {
 	aWine := test.AWine()
 	ctx := context.Background()
 
-	encodedKey, err := repository.SaveWine(ctx, &aWine)
+	id, err := repository.SaveWine(ctx, &aWine)
 	assert.Nil(t, err)
 
-	key, _ := datastore.DecodeKey(encodedKey)
+	key := datastore.IDKey("Wine", id, nil)
 	var retrievedWine wine.Wine
 	if err := persistence.DatastoreClient(ctx).Get(ctx, key, &retrievedWine); err != nil {
 		panic(err)

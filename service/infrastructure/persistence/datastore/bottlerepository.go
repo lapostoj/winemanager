@@ -15,12 +15,12 @@ type BottleRepository struct {
 }
 
 // SaveBottle saves the bottle in the database
-func (repository BottleRepository) SaveBottle(ctx context.Context, bottle *bottle.Bottle) (string, error) {
+func (repository BottleRepository) SaveBottle(ctx context.Context, bottle *bottle.Bottle) (int64, error) {
 	key, err := DatastoreClient(ctx).Put(ctx, datastore.IncompleteKey(bottleEntityKind, nil), bottle)
 	if err != nil {
-		return "", err
+		return -1, err
 	}
-	return key.Encode(), nil
+	return key.ID, nil
 }
 
 // FindBottlesForCellarID returns the bottles in the table with the cellarID provided

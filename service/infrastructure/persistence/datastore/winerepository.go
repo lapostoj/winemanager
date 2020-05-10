@@ -31,10 +31,10 @@ func (repository WineRepository) GetWineByID(ctx context.Context, ID int64, wine
 }
 
 // SaveWine save the wine in the database.
-func (repository WineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (string, error) {
+func (repository WineRepository) SaveWine(ctx context.Context, wine *wine.Wine) (int64, error) {
 	key, err := DatastoreClient(ctx).Put(ctx, datastore.IncompleteKey(wineEntityKind, nil), wine)
 	if err != nil {
-		return "", err
+		return -1, err
 	}
-	return key.Encode(), nil
+	return key.ID, nil
 }
