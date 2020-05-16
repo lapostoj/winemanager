@@ -15,4 +15,6 @@ FROM alpine:3.11
 
 COPY --from=build_image /go/bin/winemanager /bin/winemanager
 
+COPY frontend/ /frontend/
+
 ENTRYPOINT ["bin/winemanager"]
