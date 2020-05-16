@@ -34,5 +34,6 @@ jobs:
           --quiet \
           --region "$RUN_REGION" \
           --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
-          --platform "managed"
+          --platform "managed" \
+          --allow-unauthenticated \
           --set-env-vars FRONTEND_FOLDER="/srv/app/frontend/"
