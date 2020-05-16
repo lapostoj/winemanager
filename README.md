@@ -12,15 +12,21 @@ The project is made with an upload on Google appengine in mind.
 
 ## Technology
 
-- Go 1.13 (with modules)
+- Go 1.14 (with modules)
 =======
 
 ## Development
 
+### Build the app
+
+```bash
+docker build -t winemanager .
+```
+
 ### Serve the app
 
 ```bash
-FRONTEND_FOLDER=./app/frontend/ go run app/main.go
+docker run -p 8080:8080 --env FRONTEND_FOLDER="/frontend/" winemanager
 ```
 
 ### Manage dependencies
@@ -47,14 +53,4 @@ go mod tidy
 
 ```bash
 go test ./...
-```
-
-## Deploy
-
-The application expects the following in the `app` folder:
-
-- a static frontend part to live in an `frontend` folder to serve (with `index.html` and `notfound.html`)
-
-```bash
-gcloud app deploy
 ```
