@@ -5,7 +5,7 @@ go 1.14
 require (
 	cloud.google.com/go v0.60.0 // indirect
 	cloud.google.com/go/datastore v1.2.0
-	github.com/gorilla/mux v1.7.4
+	github.com/gorilla/mux v1.8.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	go.opencensus.io v0.22.4 // indirect
