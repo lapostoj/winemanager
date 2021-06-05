@@ -1,5 +1,5 @@
 # build executable binary
-FROM golang:1.16.4-alpine3.12 AS build_image
+FROM golang:1.16.5-alpine3.12 AS build_image
 
 WORKDIR $GOPATH/src/github.com/lapostoj/winemanager
 COPY . .
