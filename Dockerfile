@@ -11,7 +11,7 @@ RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/winemanager mai
 
 
 # copy binary for runtime
-FROM alpine:3.13.5
+FROM alpine:3.14.0
 
 COPY --from=build_image /go/bin/winemanager /bin/winemanager
 
