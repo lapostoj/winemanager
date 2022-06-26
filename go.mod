@@ -6,8 +6,8 @@ require (
 	cloud.google.com/go/datastore v1.8.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/gorilla/mux v1.8.0
-	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/objx v0.4.0 // indirect
+	github.com/stretchr/testify v1.7.5
 )
 
 require (
@@ -30,5 +30,5 @@ require (
 	google.golang.org/genproto v0.0.0-20220617124728-180714bec0ad // indirect
 	google.golang.org/grpc v1.47.0 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
