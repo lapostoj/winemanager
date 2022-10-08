@@ -1,6 +1,6 @@
 module github.com/lapostoj/winemanager
 
-go 1.17
+go 1.18
 
 require (
 	cloud.google.com/go/datastore v1.8.0
