@@ -16,7 +16,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - na,e: 'Google Cloud Auth'
+    - name: 'Google Cloud Auth'
       uses: 'google-github-actions/auth@v0'
       with:
         credentials_json: ${{ secrets.GCLOUD_CREDENTIALS }}
