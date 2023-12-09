@@ -21,7 +21,7 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCLOUD_CREDENTIALS }}
     - name: Google Cloud Install
-      uses: google-github-actions/setup-gcloud@v1
+      uses: google-github-actions/setup-gcloud@v2
       with:
         version: 'latest'
         project_id: ${{ secrets.PROJECT_ID }}
